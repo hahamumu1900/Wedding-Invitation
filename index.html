@@ -7,7 +7,6 @@
   
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/x-icon" href="https://img.icons8.com/color/48/wedding-gift.png">
   
   <style>
     /* Inline styles for immediate rendering */
@@ -22,6 +21,7 @@
       justify-content: center;
       align-items: center;
       padding: 20px;
+      margin: 0;
     }
   </style>
 </head>
@@ -50,6 +50,8 @@
           font-size: 14px;
           z-index: 10;
           opacity: 0.8;
+          font-weight: 500;
+          text-shadow: 0 2px 4px rgba(0,0,0,0.2);
         ">
           ✨ Klik cop di atas untuk membuka jemputan ✨
         </div>
@@ -61,7 +63,7 @@
         <!-- Envelope Background (Stays Visible) -->
         <img src="card1.png" alt="Envelope Background" class="full-img envelope-bg" id="envelopeBg">
         
-        <!-- Wedding Invitation Cards -->
+        <!-- ALL THREE CARDS - These were missing! -->
         <img src="card2.png" alt="Wedding Card 1" class="letter letter-main" id="card2">
         <img src="card3.png" alt="Wedding Card 2" class="letter">
         <img src="card4.png" alt="Wedding Card 3" class="letter">
@@ -111,11 +113,9 @@
   <!-- Background Music -->
   <audio id="bgm" loop preload="auto">
     <source src="music.mp3" type="audio/mpeg">
-    <source src="music.ogg" type="audio/ogg">
     Your browser does not support the audio element.
   </audio>
   
-  <!-- JavaScript -->
   <script>
     // ================= VARIABLES =================
     let isOpening = false;
@@ -174,13 +174,16 @@
       if (bgm) {
         try {
           bgm.volume = 0;
-          bgm.play().then(() => {
-            fadeInMusic();
-          }).catch(error => {
-            console.log('Autoplay prevented:', error);
-            // Show play button for user interaction
-            showMusicPrompt();
-          });
+          const playPromise = bgm.play();
+          
+          if (playPromise !== undefined) {
+            playPromise.then(() => {
+              fadeInMusic();
+            }).catch(error => {
+              console.log('Autoplay prevented:', error);
+              showMusicPrompt();
+            });
+          }
         } catch (error) {
           console.log('Music error:', error);
         }
@@ -236,13 +239,16 @@
       // Add zoom animation to envelope
       envelopeBg.classList.add('open-zoom');
       
-      // Animate letters in sequence
+      // Wait a bit then animate all THREE cards in sequence
       setTimeout(() => {
+        // Get ALL letter elements (card2, card3, card4)
         const letters = document.querySelectorAll('.letter');
+        
+        // Animate each card with delay
         letters.forEach((letter, index) => {
           setTimeout(() => {
             letter.classList.add('letter-out');
-          }, 300 * (index + 1));
+          }, 400 * index); // Stagger the animation
         });
       }, 400);
       
@@ -286,22 +292,13 @@
     // Update countdown every second
     setInterval(updateCountdown, 1000);
     
+    // Initial countdown update
+    updateCountdown();
+    
     // ================= GOLD DUST EFFECT =================
     function spawnDust(count) {
       const layer = document.getElementById('dust');
       if (!layer) return;
-      
-      // Clear existing dust if too many
-      const existingDust = layer.querySelectorAll('.dust').length;
-      if (existingDust > 80) {
-        // Remove some old dust
-        const dustElements = layer.querySelectorAll('.dust');
-        for (let i = 0; i < 20; i++) {
-          if (dustElements[i]) {
-            layer.removeChild(dustElements[i]);
-          }
-        }
-      }
       
       // Create new dust particles
       for (let i = 0; i < count; i++) {
@@ -339,14 +336,6 @@
     window.addEventListener('DOMContentLoaded', () => {
       // Initial dust particles
       spawnDust(20);
-      
-      // Initial countdown update
-      updateCountdown();
-      
-      // Preload music
-      if (bgm) {
-        bgm.load();
-      }
       
       // Add CSS for music prompt animation
       const style = document.createElement('style');
