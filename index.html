@@ -16,25 +16,51 @@
 <div class="camera" id="camera">
 <div class="wrapper">
 
-<!-- ===== SEALED ENVELOPE ===== -->
+<!-- ================= COVER ================= -->
+
 <div id="coverStage" class="stage">
   <img src="cover.png" class="full-img">
 
-  <div class="seal-click" id="seal"></div>
-  <div class="seal-glow" id="sealGlow"></div>
+  <div id="seal" class="seal-click"></div>
+  <div id="sealGlow" class="seal-glow"></div>
 </div>
 
-<!-- ===== OPEN ENVELOPE ===== -->
+<!-- ================= OPEN ENVELOPE ================= -->
+
 <div id="openStage" class="stage hidden">
   <img src="card1.png" class="full-img envelope-open">
 </div>
 
-<!-- ===== LETTER CONTENT ===== -->
+<!-- ================= LETTER CONTENT ================= -->
+
 <div id="letterStage" class="stage hidden">
 
   <img src="card2.png" class="letter letter-main" id="card2">
   <img src="card3.png" class="letter">
   <img src="card4.png" class="letter">
+
+  <!-- COUNTDOWN -->
+
+  <div class="countdown">
+    <div class="event-card">
+      <div class="event-title">Majlis Bermula Dalam</div>
+      <div id="timer" class="timer"></div>
+
+      <div class="event-text">
+        Glo Damansara Shopping Mall<br>
+        Petaling Jaya<br><br>
+        Sabtu • 2 Mei 2026 • 11:00 pagi
+      </div>
+
+      <a class="map-btn"
+      href="https://maps.app.goo.gl/E8qS2P7xVHtyL8967"
+      target="_blank">
+      Buka Google Map
+      </a>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
 
   <div class="gallery">
     <div class="gallery-grid">
@@ -45,9 +71,9 @@
     </div>
 
     <a class="rsvp-btn"
-       href="https://forms.gle/KYxswksdS9Qqm9YC8"
-       target="_blank">
-       RSVP Sekarang
+    href="https://forms.gle/KYxswksdS9Qqm9YC8"
+    target="_blank">
+    RSVP Sekarang
     </a>
   </div>
 
@@ -56,6 +82,7 @@
 </div>
 </div>
 
+<!-- overlays -->
 <div class="vignette"></div>
 <div class="sparkle-layer" id="dust"></div>
 
@@ -65,86 +92,106 @@
 
 <script>
 
-/* ===== SEAL TAP ===== */
+/* ================= SAFE EVENT BIND ================= */
 
-document.getElementById("seal").addEventListener("click", startOpen);
-document.getElementById("seal").addEventListener("touchstart", startOpen);
+const seal = document.getElementById("seal");
+seal.addEventListener("click", startOpen);
+seal.addEventListener("touchstart", startOpen, {passive:true});
+
+/* ================= OPEN SEQUENCE ================= */
 
 function startOpen(){
 
   glowFlash();
-  startMusic();
-  cameraPush();
+  cameraZoom();
+  musicFadeIn();
 
   document.getElementById("coverStage").classList.add("fade-out");
 
   setTimeout(()=>{
+    document.getElementById("coverStage").classList.add("hidden");
     showOpenEnvelope();
-  },700);
+  },600);
 }
 
-/* ===== SEAL FLASH ===== */
+/* ================= EFFECTS ================= */
 
 function glowFlash(){
-  const g = document.getElementById("sealGlow");
-  g.classList.add("glow-on");
+  document.getElementById("sealGlow").classList.add("glow-on");
 }
 
-/* ===== CAMERA ZOOM ===== */
-
-function cameraPush(){
+function cameraZoom(){
   document.getElementById("camera").classList.add("camera-zoom");
 }
 
-/* ===== MUSIC FADE IN ===== */
-
-function startMusic(){
+function musicFadeIn(){
   const m = document.getElementById("bgm");
   m.volume = 0;
   m.play().catch(()=>{});
   let v = 0;
-  const fade = setInterval(()=>{
+  const f = setInterval(()=>{
     v += 0.05;
     m.volume = v;
-    if(v>=0.6) clearInterval(fade);
+    if(v>=0.6) clearInterval(f);
   },120);
 }
 
-/* ===== SHOW OPEN ENVELOPE ===== */
+/* ================= STAGE 2 ================= */
 
 function showOpenEnvelope(){
-  document.getElementById("coverStage").classList.add("hidden");
   const open = document.getElementById("openStage");
   open.classList.remove("hidden");
-  open.classList.add("flap-open");
+  open.classList.add("open-zoom");
 
-  setTimeout(()=>{
-    showLetter();
-  },900);
+  setTimeout(showLetter, 900);
 }
 
-/* ===== LETTER SLIDE ===== */
+/* ================= STAGE 3 ================= */
 
 function showLetter(){
   const stage = document.getElementById("letterStage");
   stage.classList.remove("hidden");
   document.getElementById("card2").classList.add("letter-out");
-  startDust();
+  spawnDust(30);
 }
 
-/* ===== GOLD PARTICLES ===== */
+/* ================= COUNTDOWN ================= */
 
-function startDust(){
+const targetDate = new Date("May 2, 2026 11:00:00").getTime();
+
+setInterval(()=>{
+  const el = document.getElementById("timer");
+  if(!el) return;
+
+  const now = Date.now();
+  const diff = targetDate - now;
+  if(diff<=0) return;
+
+  const d = Math.floor(diff/(1000*60*60*24));
+  const h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
+  const m = Math.floor((diff%(1000*60*60))/(1000*60));
+  const s = Math.floor((diff%(1000*60))/1000);
+
+  el.innerHTML = `${d} hari ${h} jam ${m} minit ${s} saat`;
+
+},1000);
+
+/* ================= GOLD DUST ================= */
+
+function spawnDust(n){
   const layer = document.getElementById("dust");
-  for(let i=0;i<60;i++){
-    const d = document.createElement("div");
+  for(let i=0;i<n;i++){
+    const d=document.createElement("div");
     d.className="dust";
     d.style.left=Math.random()*100+"%";
-    d.style.animationDuration=(10+Math.random()*10)+"s";
+    d.style.animationDuration=(12+Math.random()*10)+"s";
     d.style.animationDelay=Math.random()*10+"s";
     layer.appendChild(d);
   }
 }
+
+/* start base dust immediately */
+spawnDust(25);
 
 </script>
 
