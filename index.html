@@ -13,137 +13,139 @@
 
 <body>
 
+<div class="camera" id="camera">
 <div class="wrapper">
 
-  <!-- ===== COVER (SEALED ENVELOPE) ===== -->
-  <div id="coverStage" class="stage">
-    <img src="cover.png" class="full-img">
+<!-- ===== SEALED ENVELOPE ===== -->
+<div id="coverStage" class="stage">
+  <img src="cover.png" class="full-img">
 
-    <!-- clickable seal area -->
-    <div class="seal-click" onclick="openEnvelope()"></div>
-  </div>
+  <div class="seal-click" id="seal"></div>
+  <div class="seal-glow" id="sealGlow"></div>
+</div>
 
-  <!-- ===== OPEN ENVELOPE ===== -->
-  <div id="openStage" class="stage hidden">
-    <img src="card1.png" class="full-img open-envelope">
-  </div>
+<!-- ===== OPEN ENVELOPE ===== -->
+<div id="openStage" class="stage hidden">
+  <img src="card1.png" class="full-img envelope-open">
+</div>
 
-  <!-- ===== LETTER CONTENT (slides out) ===== -->
-  <div id="letterStage" class="stage hidden">
+<!-- ===== LETTER CONTENT ===== -->
+<div id="letterStage" class="stage hidden">
 
-    <img src="card2.png" class="slide-card" id="card2">
-    <img src="card3.png" class="slide-card">
-    <img src="card4.png" class="slide-card">
+  <img src="card2.png" class="letter letter-main" id="card2">
+  <img src="card3.png" class="letter">
+  <img src="card4.png" class="letter">
 
-    <!-- COUNTDOWN -->
-    <div class="countdown">
-      <div class="event-card">
-        <div class="event-title">Majlis Bermula Dalam</div>
-        <div class="timer" id="timer"></div>
-
-        <div class="event-text">
-          Glo Damansara Shopping Mall<br>
-          Petaling Jaya<br><br>
-          Sabtu • 2 Mei 2026 • 11:00 pagi
-        </div>
-
-        <a class="map-btn"
-        href="https://maps.app.goo.gl/E8qS2P7xVHtyL8967"
-        target="_blank">
-        Buka Google Map
-        </a>
-      </div>
+  <div class="gallery">
+    <div class="gallery-grid">
+      <img src="gallery1.jpg">
+      <img src="gallery2.jpg">
+      <img src="gallery3.jpg">
+      <img src="gallery4.jpg">
     </div>
 
-    <!-- GALLERY -->
-    <div class="gallery">
-      <div class="gallery-grid">
-        <img src="gallery1.jpg">
-        <img src="gallery2.jpg">
-        <img src="gallery3.jpg">
-        <img src="gallery4.jpg">
-      </div>
-
-      <a class="rsvp-btn"
-      href="https://forms.gle/KYxswksdS9Qqm9YC8"
-      target="_blank">
-      RSVP Sekarang
-      </a>
-    </div>
-
+    <a class="rsvp-btn"
+       href="https://forms.gle/KYxswksdS9Qqm9YC8"
+       target="_blank">
+       RSVP Sekarang
+    </a>
   </div>
 
 </div>
 
-<!-- overlays -->
-<div class="vignette"></div>
-<div class="sparkle-layer" id="sparkle"></div>
+</div>
+</div>
 
-<!-- music -->
+<div class="vignette"></div>
+<div class="sparkle-layer" id="dust"></div>
+
 <audio id="bgm" loop>
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <script>
-/* ================= ENVELOPE OPEN SEQUENCE ================= */
 
-function openEnvelope() {
+/* ===== SEAL TAP ===== */
 
-  document.getElementById("bgm").play().catch(()=>{});
+document.getElementById("seal").addEventListener("click", startOpen);
+document.getElementById("seal").addEventListener("touchstart", startOpen);
 
-  const cover = document.getElementById("coverStage");
+function startOpen(){
+
+  glowFlash();
+  startMusic();
+  cameraPush();
+
+  document.getElementById("coverStage").classList.add("fade-out");
+
+  setTimeout(()=>{
+    showOpenEnvelope();
+  },700);
+}
+
+/* ===== SEAL FLASH ===== */
+
+function glowFlash(){
+  const g = document.getElementById("sealGlow");
+  g.classList.add("glow-on");
+}
+
+/* ===== CAMERA ZOOM ===== */
+
+function cameraPush(){
+  document.getElementById("camera").classList.add("camera-zoom");
+}
+
+/* ===== MUSIC FADE IN ===== */
+
+function startMusic(){
+  const m = document.getElementById("bgm");
+  m.volume = 0;
+  m.play().catch(()=>{});
+  let v = 0;
+  const fade = setInterval(()=>{
+    v += 0.05;
+    m.volume = v;
+    if(v>=0.6) clearInterval(fade);
+  },120);
+}
+
+/* ===== SHOW OPEN ENVELOPE ===== */
+
+function showOpenEnvelope(){
+  document.getElementById("coverStage").classList.add("hidden");
   const open = document.getElementById("openStage");
-  const letter = document.getElementById("letterStage");
-
-  cover.classList.add("fade-out");
-
-  setTimeout(()=>{
-    cover.classList.add("hidden");
-    open.classList.remove("hidden");
-    open.classList.add("zoom-in");
-  },600);
+  open.classList.remove("hidden");
+  open.classList.add("flap-open");
 
   setTimeout(()=>{
-    letter.classList.remove("hidden");
-    document.getElementById("card2").classList.add("card-out");
-  },1300);
+    showLetter();
+  },900);
+}
 
+/* ===== LETTER SLIDE ===== */
+
+function showLetter(){
+  const stage = document.getElementById("letterStage");
+  stage.classList.remove("hidden");
+  document.getElementById("card2").classList.add("letter-out");
   startDust();
 }
 
-/* ================= COUNTDOWN ================= */
-
-const target = new Date("May 2, 2026 11:00:00").getTime();
-
-setInterval(()=>{
-  const now = Date.now();
-  const d = target - now;
-
-  if (d <= 0) return;
-
-  const days = Math.floor(d/(1000*60*60*24));
-  const hours = Math.floor((d%(1000*60*60*24))/(1000*60*60));
-  const mins = Math.floor((d%(1000*60*60))/(1000*60));
-  const secs = Math.floor((d%(1000*60))/1000);
-
-  document.getElementById("timer").innerHTML =
-    `${days} hari ${hours} jam ${mins} minit ${secs} saat`;
-
-},1000);
-
-/* ================= GOLD DUST ================= */
+/* ===== GOLD PARTICLES ===== */
 
 function startDust(){
-  const layer = document.getElementById("sparkle");
-  for(let i=0;i<40;i++){
+  const layer = document.getElementById("dust");
+  for(let i=0;i<60;i++){
     const d = document.createElement("div");
-    d.className = "dust";
-    d.style.left = Math.random()*100 + "%";
-    d.style.animationDelay = Math.random()*15 + "s";
-    d.style.animationDuration = (12 + Math.random()*10)+"s";
+    d.className="dust";
+    d.style.left=Math.random()*100+"%";
+    d.style.animationDuration=(10+Math.random()*10)+"s";
+    d.style.animationDelay=Math.random()*10+"s";
     layer.appendChild(d);
   }
 }
+
 </script>
 
 </body>
