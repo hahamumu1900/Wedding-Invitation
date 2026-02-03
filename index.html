@@ -162,23 +162,21 @@
     }, { passive: false });
     
     // ================= OPEN SEQUENCE =================
-    function startOpen() {
-      if (isOpening) return;
-      isOpening = true;
-      
-      // Visual effects
-      glowFlash();
-      cameraZoom();
-      
-      // Audio
-      startMusic();
-      
-      // Change body background for better scroll experience
-      body.classList.add('body-bg-light');
-      
-      // Enable scrolling on wrapper
-      mainWrapper.classList.add('scrollable-wrapper');
-      
+  function startOpen() {
+  if (isOpening) return;
+  isOpening = true;
+
+  glowFlash();
+  cameraZoom();
+  startMusic();
+
+  body.classList.add('body-bg-light');
+
+  // ✅ unlock page scroll
+  document.body.style.overflow = "auto";
+
+  // ✅ enable wrapper scroll
+  mainWrapper.classList.add('scrollable-wrapper');
       // Fade out cover
       coverStage.classList.add('fade-out');
       
@@ -427,3 +425,4 @@
   
 </body>
 </html>
+
