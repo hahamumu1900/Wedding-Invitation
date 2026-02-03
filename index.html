@@ -8,7 +8,7 @@
 
 <link rel="stylesheet" href="style.css">
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500&family=Playfair+Display&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
 </head>
 
 <body>
@@ -98,10 +98,14 @@ const seal = document.getElementById("seal");
 seal.addEventListener("click", startOpen);
 seal.addEventListener("touchstart", startOpen, {passive:true});
 
+let isOpening = false;
+
 /* ================= OPEN SEQUENCE ================= */
 
 function startOpen(){
-
+  if(isOpening) return;
+  isOpening = true;
+  
   glowFlash();
   cameraZoom();
   musicFadeIn();
@@ -111,13 +115,16 @@ function startOpen(){
   setTimeout(()=>{
     document.getElementById("coverStage").classList.add("hidden");
     showOpenEnvelope();
-  },600);
+  },800);
 }
 
 /* ================= EFFECTS ================= */
 
 function glowFlash(){
-  document.getElementById("sealGlow").classList.add("glow-on");
+  const glow = document.getElementById("sealGlow");
+  glow.classList.remove("glow-on");
+  void glow.offsetWidth; // Trigger reflow
+  glow.classList.add("glow-on");
 }
 
 function cameraZoom(){
@@ -127,13 +134,14 @@ function cameraZoom(){
 function musicFadeIn(){
   const m = document.getElementById("bgm");
   m.volume = 0;
-  m.play().catch(()=>{});
+  m.play().catch((e)=>{console.log("Audio play prevented:", e)});
+  
   let v = 0;
   const f = setInterval(()=>{
-    v += 0.05;
-    m.volume = v;
-    if(v>=0.6) clearInterval(f);
-  },120);
+    v += 0.03;
+    m.volume = Math.min(v, 0.7);
+    if(v >= 0.7) clearInterval(f);
+  },100);
 }
 
 /* ================= STAGE 2 ================= */
@@ -141,9 +149,17 @@ function musicFadeIn(){
 function showOpenEnvelope(){
   const open = document.getElementById("openStage");
   open.classList.remove("hidden");
+  
+  // Force reflow
+  void open.offsetWidth;
+  
   open.classList.add("open-zoom");
-
-  setTimeout(showLetter, 900);
+  
+  // Animate letters sequentially
+  setTimeout(() => {
+    document.getElementById("openStage").classList.add("fade-out");
+    setTimeout(showLetter, 400);
+  }, 800);
 }
 
 /* ================= STAGE 3 ================= */
@@ -151,21 +167,36 @@ function showOpenEnvelope(){
 function showLetter(){
   const stage = document.getElementById("letterStage");
   stage.classList.remove("hidden");
-  document.getElementById("card2").classList.add("letter-out");
-  spawnDust(30);
+  
+  // Animate letters with staggered delay
+  const letters = document.querySelectorAll('.letter');
+  letters.forEach((letter, index) => {
+    setTimeout(() => {
+      letter.classList.add('letter-out');
+    }, 300 * index);
+  });
+  
+  // Add more dust after letters appear
+  setTimeout(() => {
+    spawnDust(40);
+  }, 1200);
 }
 
 /* ================= COUNTDOWN ================= */
 
 const targetDate = new Date("May 2, 2026 11:00:00").getTime();
 
-setInterval(()=>{
+function updateCountdown() {
   const el = document.getElementById("timer");
   if(!el) return;
 
   const now = Date.now();
   const diff = targetDate - now;
-  if(diff<=0) return;
+  
+  if(diff <= 0) {
+    el.innerHTML = "Majlis Telah Bermula!";
+    return;
+  }
 
   const d = Math.floor(diff/(1000*60*60*24));
   const h = Math.floor((diff%(1000*60*60*24))/(1000*60*60));
@@ -173,25 +204,60 @@ setInterval(()=>{
   const s = Math.floor((diff%(1000*60))/1000);
 
   el.innerHTML = `${d} hari ${h} jam ${m} minit ${s} saat`;
+}
 
-},1000);
+// Update immediately and then every second
+updateCountdown();
+setInterval(updateCountdown, 1000);
 
 /* ================= GOLD DUST ================= */
 
 function spawnDust(n){
   const layer = document.getElementById("dust");
-  for(let i=0;i<n;i++){
-    const d=document.createElement("div");
-    d.className="dust";
-    d.style.left=Math.random()*100+"%";
-    d.style.animationDuration=(12+Math.random()*10)+"s";
-    d.style.animationDelay=Math.random()*10+"s";
+  const existingDust = layer.querySelectorAll('.dust').length;
+  
+  // Limit total dust particles
+  if(existingDust > 100) return;
+  
+  for(let i = 0; i < n; i++){
+    const d = document.createElement("div");
+    d.className = "dust";
+    
+    // Random positioning with some distribution logic
+    const leftPos = 10 + Math.random() * 80;
+    d.style.left = leftPos + "%";
+    
+    // Random size and animation
+    const size = 3 + Math.random() * 5;
+    d.style.width = size + "px";
+    d.style.height = size + "px";
+    
+    const duration = 15 + Math.random() * 20;
+    d.style.animationDuration = duration + "s";
+    d.style.animationDelay = Math.random() * 15 + "s";
+    
+    // Random opacity
+    d.style.opacity = 0.3 + Math.random() * 0.5;
+    
     layer.appendChild(d);
+    
+    // Remove dust after animation completes
+    setTimeout(() => {
+      if(d.parentNode === layer) {
+        layer.removeChild(d);
+      }
+    }, (duration + parseFloat(d.style.animationDelay)) * 1000);
   }
 }
 
+/* ================= SMOOTH SCROLL BEHAVIOR ================= */
+
+document.documentElement.style.scrollBehavior = 'smooth';
+
 /* start base dust immediately */
-spawnDust(25);
+window.addEventListener('load', () => {
+  spawnDust(30);
+});
 
 </script>
 
