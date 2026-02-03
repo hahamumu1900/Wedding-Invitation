@@ -1,11 +1,14 @@
+/* ===== BASE ===== */
+
 html, body {
   margin:0;
   padding:0;
   overflow:hidden;
   background:#0a0a0a;
+  font-family: system-ui, sans-serif;
 }
 
-/* wrapper */
+/* ===== WRAPPER ===== */
 
 .wrapper {
   max-width:480px;
@@ -13,13 +16,15 @@ html, body {
   height:100vh;
   overflow:hidden;
   position:relative;
+  background:#efe7dc;
 }
 
+/* scroll enabled after animation */
 .wrapper.scrollable {
   overflow-y:auto;
 }
 
-/* stages */
+/* ===== STAGES ===== */
 
 .stage {
   position:relative;
@@ -29,23 +34,22 @@ html, body {
   display:none;
 }
 
-/* images */
+/* ===== IMAGES ===== */
 
 .full-img {
   width:100%;
   display:block;
 }
 
-/* ===== SEAL HITBOX — MATCH NEW ART ===== */
+/* ===== SEAL CLICK AREA (MATCHED TO NEW COVER) ===== */
 
-/* your new seal is lower and centered */
 .seal-click {
   position:absolute;
   width:160px;
   height:160px;
 
   left:50%;
-  bottom:18%;      /* key adjustment */
+  bottom:18%;
   transform:translateX(-50%);
 
   border-radius:50%;
@@ -53,47 +57,41 @@ html, body {
   z-index:10;
 }
 
-/* fade */
+/* optional debug — enable to see hitbox */
+/*
+.seal-click {
+  background: rgba(255,0,0,0.2);
+}
+*/
+
+/* ===== FADE ===== */
 
 .fade-out {
   opacity:0;
-  transition:.5s;
+  transition:.5s ease;
 }
 
-/* ===== LETTER SLIDE — MATCH ENVELOPE POCKET ===== */
+/* ===== LETTER SLIDE EFFECT ===== */
 
 .slide-letter {
   position:absolute;
+
   left:10%;
   width:80%;
 
-  /* start deeper inside pocket */
-  top:55%;
-
+  top:55%;                 /* pocket position */
   transform: translateY(40%);
+
   z-index:3;
 
-  filter: drop-shadow(0 12px 18px rgba(0,0,0,.25));
+  filter: drop-shadow(0 14px 22px rgba(0,0,0,.28));
+  will-change: transform;
 }
 
-/* slide upward */
+/* animation */
 
 .slide-up {
   animation: slideOut 1.5s cubic-bezier(.22,1,.36,1) forwards;
 }
 
-@keyframes slideOut {
-  from {
-    transform: translateY(40%);
-  }
-  to {
-    transform: translateY(-35%);
-  }
-}
-
-/* rest cards */
-
-.invitation-card {
-  width:100%;
-  display:block;
-}
+@k
