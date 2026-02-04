@@ -4,46 +4,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wedding Invitation</title>
-
 <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div class="wrapper" id="wrapper">
+<div class="app">
 
-  <!-- ================= CLOSED ENVELOPE ================= -->
-  <div id="coverStage" class="stage">
-    <img src="cover.png" class="full-img">
-
-    <!-- Seal click area (matched to new artwork) -->
+  <!-- CLOSED ENVELOPE -->
+  <section id="coverStage" class="stage">
+    <img src="cover.png" class="frame-img">
     <div id="seal" class="seal-click"></div>
-  </div>
+  </section>
 
 
-  <!-- ================= OPEN ENVELOPE ================= -->
-  <div id="openStage" class="stage hidden">
+  <!-- OPEN ENVELOPE + LETTER -->
+  <section id="openStage" class="stage hidden">
 
-    <!-- opened envelope -->
-    <img src="card1.png" class="full-img">
+    <div class="envelope-frame">
+      <img src="card1.png" class="frame-img">
 
-    <!-- sliding letter -->
-    <img src="card2.png" id="slideLetter" class="slide-letter">
+      <!-- letter inside same frame -->
+      <img src="card2.png" id="slideLetter" class="letter">
+    </div>
 
-  </div>
+  </section>
 
 
-  <!-- ================= SCROLL CONTENT ================= -->
-  <div id="contentStage" class="hidden">
-    <img src="card3.png" class="invitation-card">
-    <img src="card4.png" class="invitation-card">
-    <img src="card5.png" class="invitation-card">
-  </div>
+  <!-- SCROLL CARDS -->
+  <section id="contentStage" class="hidden">
+    <img src="card3.png" class="card">
+    <img src="card4.png" class="card">
+    <img src="card5.png" class="card">
+  </section>
 
 </div>
 
 
-<!-- ================= MUSIC ================= -->
 <audio id="bgm" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
@@ -55,64 +52,37 @@ const cover = document.getElementById("coverStage");
 const openStage = document.getElementById("openStage");
 const letter = document.getElementById("slideLetter");
 const content = document.getElementById("contentStage");
-const wrapper = document.getElementById("wrapper");
+const app = document.querySelector(".app");
 const bgm = document.getElementById("bgm");
-
-let opened = false;
 
 seal.onclick = () => {
 
-  if (opened) return;
-  opened = true;
-
   startMusic();
 
-  // fade closed envelope
-  cover.classList.add("fade-out");
+  cover.classList.add("fade");
 
   setTimeout(()=>{
     cover.classList.add("hidden");
     openStage.classList.remove("hidden");
-
-    // start letter slide
-    letter.classList.add("slide-up");
-
+    letter.classList.add("letter-slide");
   },500);
 
-  // unlock scroll after slide finishes
   setTimeout(()=>{
-    wrapper.classList.add("scrollable");
+    app.classList.add("scroll");
     content.classList.remove("hidden");
   },2000);
 };
 
 
-/* ===== MUSIC FADE-IN ===== */
-
-function startMusic() {
-  if (!bgm) return;
-
+function startMusic(){
   bgm.volume = 0;
-
-  const playPromise = bgm.play();
-
-  if (playPromise !== undefined) {
-    playPromise.then(() => {
-
-      let v = 0;
-      const fade = setInterval(() => {
-        v += 0.05;
-        if (v >= 0.6) {
-          v = 0.6;
-          clearInterval(fade);
-        }
-        bgm.volume = v;
-      }, 120);
-
-    }).catch(() => {
-      console.log("Autoplay blocked");
-    });
-  }
+  bgm.play().catch(()=>{});
+  let v=0;
+  const f=setInterval(()=>{
+    v+=0.05;
+    if(v>=0.6){v=0.6;clearInterval(f);}
+    bgm.volume=v;
+  },120);
 }
 </script>
 
