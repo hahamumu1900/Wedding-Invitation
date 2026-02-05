@@ -57,7 +57,6 @@
         ⏰ 11:00 pagi
       </div>
 
-      <!-- ✅ GOOGLE MAP LINK -->
       <a class="map-btn"
          href="https://maps.app.goo.gl/E8qS2P7xVHtyL8967"
          target="_blank">
@@ -76,7 +75,17 @@
       <img src="gallery4.jpg">
     </div>
 
-    <!-- ✅ RSVP BUTTON RESTORED -->
+    <!-- RSVP (gallery section) -->
+    <a class="rsvp-btn"
+       href="https://forms.gle/KYxswksdS9Qqm9YC8"
+       target="_blank">
+       📝 RSVP Sekarang
+    </a>
+  </div>
+
+
+  <!-- ===== FINAL RSVP (BOTTOM GUARANTEE) ===== -->
+  <div class="final-rsvp">
     <a class="rsvp-btn"
        href="https://forms.gle/KYxswksdS9Qqm9YC8"
        target="_blank">
@@ -90,24 +99,21 @@
 
 
 <!-- ================= EFFECT LAYERS ================= -->
-
 <div class="sparkle-layer" id="dust"></div>
 <div class="vignette"></div>
 
 
 <!-- ================= MUSIC ================= -->
-
 <audio id="bgm" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
-<!-- ✅ MUSIC TOGGLE BUTTON -->
 <button id="musicToggle" class="music-toggle hidden">🔊</button>
 
 
 <script>
 
-/* ================= DOM ================= */
+/* DOM */
 
 const seal = document.getElementById("seal");
 const glow = document.getElementById("sealGlow");
@@ -121,13 +127,12 @@ const bgm = document.getElementById("bgm");
 const musicBtn = document.getElementById("musicToggle");
 
 
-/* ================= SEAL CLICK ================= */
+/* SEAL CLICK */
 
 seal.onclick = () => {
 
   glow.classList.add("glow-on");
   spawnDust(40);
-
   startMusic();
 
   cover.classList.add("fade");
@@ -145,12 +150,12 @@ seal.onclick = () => {
   setTimeout(()=>{
     content.classList.remove("hidden");
     app.classList.add("scroll");
-    musicBtn.classList.remove("hidden");   // show toggle
+    musicBtn.classList.remove("hidden");
   },2200);
 };
 
 
-/* ================= MUSIC ================= */
+/* MUSIC */
 
 function startMusic(){
   bgm.volume = 0;
@@ -163,8 +168,6 @@ function startMusic(){
   },120);
 }
 
-/* toggle */
-
 musicBtn.onclick = () => {
   if (bgm.paused) {
     bgm.play();
@@ -176,7 +179,7 @@ musicBtn.onclick = () => {
 };
 
 
-/* ================= COUNTDOWN ================= */
+/* COUNTDOWN */
 
 const target = new Date('May 2, 2026 11:00:00 GMT+0800').getTime();
 
@@ -194,7 +197,7 @@ setInterval(updateTimer,1000);
 updateTimer();
 
 
-/* ================= SPARKLES ================= */
+/* SPARKLES */
 
 function spawnDust(n){
   const layer = document.getElementById("dust");
