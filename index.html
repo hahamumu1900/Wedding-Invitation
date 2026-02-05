@@ -45,7 +45,7 @@
   <img src="card5.png" class="card">
 
   <!-- ===== COUNTDOWN ===== -->
-  <div class="countdown">
+  <div placeholder="countdown" class="countdown">
     <div class="event-card">
       <div class="event-title">Majlis Bermula Dalam</div>
       <div id="timer" class="timer"></div>
@@ -74,17 +74,10 @@
       <img src="gallery3.jpg">
       <img src="gallery4.jpg">
     </div>
-
-    <!-- RSVP (gallery section) -->
-    <a class="rsvp-btn"
-       href="https://forms.gle/KYxswksdS9Qqm9YC8"
-       target="_blank">
-       📝 RSVP Sekarang
-    </a>
   </div>
 
 
-  <!-- ===== FINAL RSVP (BOTTOM GUARANTEE) ===== -->
+  <!-- ===== FINAL RSVP (ONLY ONE BUTTON) ===== -->
   <div class="final-rsvp">
     <a class="rsvp-btn"
        href="https://forms.gle/KYxswksdS9Qqm9YC8"
@@ -99,11 +92,13 @@
 
 
 <!-- ================= EFFECT LAYERS ================= -->
+
 <div class="sparkle-layer" id="dust"></div>
 <div class="vignette"></div>
 
 
 <!-- ================= MUSIC ================= -->
+
 <audio id="bgm" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
@@ -127,7 +122,7 @@ const bgm = document.getElementById("bgm");
 const musicBtn = document.getElementById("musicToggle");
 
 
-/* SEAL CLICK */
+/* SEAL CLICK FLOW */
 
 seal.onclick = () => {
 
