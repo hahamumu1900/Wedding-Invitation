@@ -28,4 +28,163 @@
 <!-- OPEN ENVELOPE -->
 <section id="openStage" class="stage hidden">
 
-  <
+  <div class="envelope-frame">
+
+    <!-- folding envelope -->
+    <img src="card1.png" id="envelopeOpen" class="frame-img fold-start">
+
+    <!-- sliding letter -->
+    <img src="card2.png" id="slideLetter" class="letter">
+
+  </div>
+
+</section>
+
+
+<!-- SCROLL CONTENT -->
+<section id="contentStage" class="scrollable-content hidden">
+
+  <img src="card3.png" class="card">
+  <img src="card4.png" class="card">
+  <img src="card5.png" class="card">
+
+  <!-- COUNTDOWN -->
+  <div class="countdown">
+    <div class="event-card">
+      <div class="event-title">Majlis Bermula Dalam</div>
+      <div id="timer" class="timer"></div>
+
+      <div class="event-text">
+        <strong>Glo Damansara Shopping Mall</strong><br>
+        Petaling Jaya<br><br>
+        📅 Sabtu • 2 Mei 2026<br>
+        ⏰ 11:00 pagi
+      </div>
+
+      <a class="map-btn"
+         href="https://maps.app.goo.gl/E8qS2P7xVHtyL8967"
+         target="_blank">
+         📍 Buka Google Map
+      </a>
+    </div>
+  </div>
+
+
+  <!-- GALLERY + RSVP -->
+  <div class="gallery">
+    <div class="gallery-grid">
+      <img src="gallery1.jpg">
+      <img src="gallery2.jpg">
+      <img src="gallery3.jpg">
+      <img src="gallery4.jpg">
+    </div>
+
+    <a class="rsvp-btn"
+       href="https://forms.gle/KYxswksdS9Qqm9YC8"
+       target="_blank">
+       📝 RSVP Sekarang
+    </a>
+  </div>
+
+</section>
+
+</div>
+
+
+<!-- EFFECT LAYERS -->
+<div class="sparkle-layer" id="dust"></div>
+<div class="vignette"></div>
+
+<audio id="bgm" loop preload="auto">
+  <source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+
+const seal = document.getElementById("seal");
+const glow = document.getElementById("sealGlow");
+const cover = document.getElementById("coverStage");
+const openStage = document.getElementById("openStage");
+const envelope = document.getElementById("envelopeOpen");
+const letter = document.getElementById("slideLetter");
+const content = document.getElementById("contentStage");
+const app = document.getElementById("app");
+const bgm = document.getElementById("bgm");
+
+/* ===== CLICK SEAL ===== */
+
+seal.onclick = () => {
+
+  glow.classList.add("glow-on");
+  spawnDust(40);
+  startMusic();
+
+  cover.classList.add("fade");
+
+  setTimeout(()=>{
+    cover.classList.add("hidden");
+    openStage.classList.remove("hidden");
+    envelope.classList.add("fold-open");
+  },600);
+
+  setTimeout(()=>{
+    letter.classList.add("letter-slide");
+  },1100);
+
+  setTimeout(()=>{
+    content.classList.remove("hidden");
+    app.classList.add("scroll");
+  },2200);
+};
+
+
+/* ===== MUSIC ===== */
+
+function startMusic(){
+  bgm.volume = 0;
+  bgm.play().catch(()=>{});
+  let v=0;
+  const f=setInterval(()=>{
+    v+=0.05;
+    if(v>=0.6){v=0.6;clearInterval(f);}
+    bgm.volume=v;
+  },120);
+}
+
+
+/* ===== COUNTDOWN ===== */
+
+const target = new Date('May 2, 2026 11:00:00 GMT+0800').getTime();
+
+function updateTimer(){
+  const diff = target - Date.now();
+  if(diff<=0){timer.innerHTML="🎉 Majlis Bermula!"; return;}
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor(diff%86400000/3600000);
+  const m=Math.floor(diff%3600000/60000);
+  const s=Math.floor(diff%60000/1000);
+  timer.innerHTML = `${d} hari ${h} jam ${m} minit ${s} saat`;
+}
+
+setInterval(updateTimer,1000);
+updateTimer();
+
+
+/* ===== SPARKLE DUST ===== */
+
+function spawnDust(n){
+  const layer = document.getElementById("dust");
+  for(let i=0;i<n;i++){
+    const d=document.createElement("div");
+    d.className="dust";
+    d.style.left=Math.random()*100+"%";
+    d.style.animationDuration=(10+Math.random()*15)+"s";
+    layer.appendChild(d);
+    setTimeout(()=>d.remove(),20000);
+  }
+}
+
+</script>
+
+</body>
+</html>
