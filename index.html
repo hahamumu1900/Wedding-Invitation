@@ -13,9 +13,10 @@
 
 <div class="app" id="app">
 
-<!-- CLOSED ENVELOPE -->
+<!-- ================= COVER ================= -->
 <section id="coverStage" class="stage">
   <img src="cover.png" class="frame-img">
+
   <div id="seal" class="seal-click"></div>
   <div id="sealGlow" class="seal-glow"></div>
 
@@ -25,30 +26,25 @@
 </section>
 
 
-<!-- OPEN ENVELOPE -->
+<!-- ================= OPEN ENVELOPE ================= -->
 <section id="openStage" class="stage hidden">
 
   <div class="envelope-frame">
-
-    <!-- folding envelope -->
     <img src="card1.png" id="envelopeOpen" class="frame-img fold-start">
-
-    <!-- sliding letter -->
     <img src="card2.png" id="slideLetter" class="letter">
-
   </div>
 
 </section>
 
 
-<!-- SCROLL CONTENT -->
+<!-- ================= SCROLL CONTENT ================= -->
 <section id="contentStage" class="scrollable-content hidden">
 
   <img src="card3.png" class="card">
   <img src="card4.png" class="card">
   <img src="card5.png" class="card">
 
-  <!-- COUNTDOWN -->
+  <!-- ===== COUNTDOWN ===== -->
   <div class="countdown">
     <div class="event-card">
       <div class="event-title">Majlis Bermula Dalam</div>
@@ -61,6 +57,7 @@
         ⏰ 11:00 pagi
       </div>
 
+      <!-- ✅ GOOGLE MAP LINK -->
       <a class="map-btn"
          href="https://maps.app.goo.gl/E8qS2P7xVHtyL8967"
          target="_blank">
@@ -70,7 +67,7 @@
   </div>
 
 
-  <!-- GALLERY + RSVP -->
+  <!-- ===== GALLERY ===== -->
   <div class="gallery">
     <div class="gallery-grid">
       <img src="gallery1.jpg">
@@ -79,6 +76,7 @@
       <img src="gallery4.jpg">
     </div>
 
+    <!-- ✅ RSVP BUTTON RESTORED -->
     <a class="rsvp-btn"
        href="https://forms.gle/KYxswksdS9Qqm9YC8"
        target="_blank">
@@ -91,15 +89,25 @@
 </div>
 
 
-<!-- EFFECT LAYERS -->
+<!-- ================= EFFECT LAYERS ================= -->
+
 <div class="sparkle-layer" id="dust"></div>
 <div class="vignette"></div>
+
+
+<!-- ================= MUSIC ================= -->
 
 <audio id="bgm" loop preload="auto">
   <source src="music.mp3" type="audio/mpeg">
 </audio>
 
+<!-- ✅ MUSIC TOGGLE BUTTON -->
+<button id="musicToggle" class="music-toggle hidden">🔊</button>
+
+
 <script>
+
+/* ================= DOM ================= */
 
 const seal = document.getElementById("seal");
 const glow = document.getElementById("sealGlow");
@@ -110,13 +118,16 @@ const letter = document.getElementById("slideLetter");
 const content = document.getElementById("contentStage");
 const app = document.getElementById("app");
 const bgm = document.getElementById("bgm");
+const musicBtn = document.getElementById("musicToggle");
 
-/* ===== CLICK SEAL ===== */
+
+/* ================= SEAL CLICK ================= */
 
 seal.onclick = () => {
 
   glow.classList.add("glow-on");
   spawnDust(40);
+
   startMusic();
 
   cover.classList.add("fade");
@@ -134,11 +145,12 @@ seal.onclick = () => {
   setTimeout(()=>{
     content.classList.remove("hidden");
     app.classList.add("scroll");
+    musicBtn.classList.remove("hidden");   // show toggle
   },2200);
 };
 
 
-/* ===== MUSIC ===== */
+/* ================= MUSIC ================= */
 
 function startMusic(){
   bgm.volume = 0;
@@ -151,8 +163,20 @@ function startMusic(){
   },120);
 }
 
+/* toggle */
 
-/* ===== COUNTDOWN ===== */
+musicBtn.onclick = () => {
+  if (bgm.paused) {
+    bgm.play();
+    musicBtn.innerHTML = "🔊";
+  } else {
+    bgm.pause();
+    musicBtn.innerHTML = "🔈";
+  }
+};
+
+
+/* ================= COUNTDOWN ================= */
 
 const target = new Date('May 2, 2026 11:00:00 GMT+0800').getTime();
 
@@ -170,7 +194,7 @@ setInterval(updateTimer,1000);
 updateTimer();
 
 
-/* ===== SPARKLE DUST ===== */
+/* ================= SPARKLES ================= */
 
 function spawnDust(n){
   const layer = document.getElementById("dust");
