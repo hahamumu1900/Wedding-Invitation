@@ -4,87 +4,28 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wedding Invitation</title>
+
 <link rel="stylesheet" href="style.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&family=Playfair+Display:wght@500&display=swap" rel="stylesheet">
 </head>
 
 <body>
 
-<div class="app">
+<div class="app" id="app">
 
-  <!-- CLOSED ENVELOPE -->
-  <section id="coverStage" class="stage">
-    <img src="cover.png" class="frame-img">
-    <div id="seal" class="seal-click"></div>
-  </section>
+<!-- CLOSED ENVELOPE -->
+<section id="coverStage" class="stage">
+  <img src="cover.png" class="frame-img">
+  <div id="seal" class="seal-click"></div>
+  <div id="sealGlow" class="seal-glow"></div>
 
-
-  <!-- OPEN ENVELOPE + LETTER -->
-  <section id="openStage" class="stage hidden">
-
-    <div class="envelope-frame">
-      <img src="card1.png" class="frame-img">
-
-      <!-- letter inside same frame -->
-      <img src="card2.png" id="slideLetter" class="letter">
-    </div>
-
-  </section>
+  <div class="instruction-hint">
+    ✨ Klik cop untuk buka jemputan ✨
+  </div>
+</section>
 
 
-  <!-- SCROLL CARDS -->
-  <section id="contentStage" class="hidden">
-    <img src="card3.png" class="card">
-    <img src="card4.png" class="card">
-    <img src="card5.png" class="card">
-  </section>
+<!-- OPEN ENVELOPE -->
+<section id="openStage" class="stage hidden">
 
-</div>
-
-
-<audio id="bgm" loop preload="auto">
-  <source src="music.mp3" type="audio/mpeg">
-</audio>
-
-
-<script>
-const seal = document.getElementById("seal");
-const cover = document.getElementById("coverStage");
-const openStage = document.getElementById("openStage");
-const letter = document.getElementById("slideLetter");
-const content = document.getElementById("contentStage");
-const app = document.querySelector(".app");
-const bgm = document.getElementById("bgm");
-
-seal.onclick = () => {
-
-  startMusic();
-
-  cover.classList.add("fade");
-
-  setTimeout(()=>{
-    cover.classList.add("hidden");
-    openStage.classList.remove("hidden");
-    letter.classList.add("letter-slide");
-  },500);
-
-  setTimeout(()=>{
-    app.classList.add("scroll");
-    content.classList.remove("hidden");
-  },2000);
-};
-
-
-function startMusic(){
-  bgm.volume = 0;
-  bgm.play().catch(()=>{});
-  let v=0;
-  const f=setInterval(()=>{
-    v+=0.05;
-    if(v>=0.6){v=0.6;clearInterval(f);}
-    bgm.volume=v;
-  },120);
-}
-</script>
-
-</body>
-</html>
+  <
