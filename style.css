@@ -20,11 +20,12 @@ min-height:100vh;
 overflow:hidden;
 position:relative;
 
-/* glass overlay so text/cards stay readable */
-background:rgba(255,255,255,0.65);
+/* glass overlay for premium readability */
+background:rgba(255,255,255,0.75);
 backdrop-filter: blur(6px);
 
-box-shadow:0 0 60px rgba(0,0,0,.35);
+box-shadow:0 0 60px rgba(0,0,0,.5);
+border-radius:15px; /* soft round corners for smooth feel */
 }
 
 .app.scroll{
@@ -65,7 +66,7 @@ clip-path: inset(52% 0 0 0);
 filter: brightness(.92) contrast(.98);
 }
 
-/* unfold animation */
+/* unfold animation with subtle light sweep */
 .fold-open{
 animation:cinematicUnfold 1.25s cubic-bezier(.22,1,.25,1) forwards;
 }
@@ -79,16 +80,16 @@ filter: brightness(.92);
 
 55%{
 clip-path: inset(15% 0 0 0);
-filter: brightness(1.02);
+filter: brightness(1.05);
 }
 
 100%{
 clip-path: inset(0 0 0 0);
-filter: brightness(1);
+filter: brightness(1.05);
 }
 }
 
-/* crease shadow */
+/* crease shadow to enhance paper realism */
 .envelope-frame::after{
 content:"";
 position:absolute;
@@ -97,13 +98,13 @@ right:0;
 top:48%;
 height:10px;
 background:linear-gradient(to bottom,
-rgba(0,0,0,.25),
+rgba(0,0,0,.35),
 rgba(0,0,0,0));
+opacity:0.8;
 pointer-events:none;
-opacity:.7;
 }
 
-/* light sweep */
+/* light sweep across the envelope */
 .envelope-frame::before{
 content:"";
 position:absolute;
@@ -161,8 +162,7 @@ cursor:pointer;
 z-index:10;
 }
 
-/* glow */
-
+/* glow with soft animation */
 .seal-glow{
 position:absolute;
 width:180px;
