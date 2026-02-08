@@ -1,194 +1,294 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wedding Invitation</title>
-
-<link rel="stylesheet" href="style.css">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Wedding Invitation</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
+<body class="locked">
 
-<body>
+  <!-- Sparkles overlay -->
+  <div id="sparkles" aria-hidden="true"></div>
 
-<!-- MUSIC -->
-<audio id="bgMusic" loop>
-    <source src="music.mp3" type="audio/mpeg">
-</audio>
+  <main class="page">
 
-<button id="musicBtn" onclick="toggleMusic()">🔊</button>
+    <!-- ===== HERO / ENVELOPE STAGE ===== -->
+    <section class="stage" id="stage">
+      <div class="frame">
 
-<!-- ENVELOPE SECTION -->
-<div id="envelopeSection">
+        <!-- Envelope (sealed/unsealed swap) -->
+        <img
+          id="envelopeImg"
+          class="envelope"
+          src="envelope.png"
+          alt="Envelope"
+          draggable="false"
+        />
 
-    <button id="sealBtn" onclick="openEnvelope()">Open Invitation</button>
+        <!-- Seal button (click area) -->
+        <button
+          id="sealBtn"
+          class="sealBtn"
+          type="button"
+          aria-label="Open envelope"
+        >
+          OPEN
+        </button>
 
-    <img id="card1" src="card1.png">
-
-    <!-- FLIP CARD2 CONTAINER -->
-    <div id="flipContainer">
-        <div id="flipCard">
-            <img id="front" src="card2.png">
-            <img id="back" src="card2_2.png">
-        </div>
-    </div>
-
-</div>
-
-<!-- SPARKLE EFFECT -->
-<div id="sparkles"></div>
-
-<!-- MAIN SCROLLABLE CONTENT -->
-<div id="mainContent">
-
-    <img src="card3.png" class="content-card">
-    <img src="card4.png" class="content-card">
-
-    <!-- COUNTDOWN -->
-    <div id="countdownSection">
-        <h2>Countdown to Our Big Day</h2>
-        <div id="countdown"></div>
-    </div>
-
-    <!-- GALLERY -->
-    <div id="gallerySection">
-        <h2>Gallery</h2>
-
-        <div class="gallery-slider">
-            <img class="galleryImage active" src="gallery1.jpg">
-            <img class="galleryImage" src="gallery2.jpg">
-            <img class="galleryImage" src="gallery3.jpg">
+        <!-- Card cover (slides up to cover envelope) -->
+        <div id="flipContainer" class="flipContainer" aria-label="Invitation card (tap to flip)">
+          <div id="flipCard" class="flipCard">
+            <img class="cardFace cardFront" src="card1.png" alt="Card front" draggable="false" />
+            <img class="cardFace cardBack"  src="card2.png" alt="Card back"  draggable="false" />
+          </div>
+          <div class="flipHint">Tap to flip</div>
         </div>
 
-        <button onclick="prevImage()">◀</button>
-        <button onclick="nextImage()">▶</button>
-    </div>
+      </div>
+    </section>
 
-    <!-- MAP -->
-    <div id="mapSection">
-        <a href="https://maps.google.com" target="_blank">
-            <button>Open Google Map</button>
-        </a>
-    </div>
+    <!-- ===== DOA SECTION ===== -->
+    <section class="section doa" id="doaSection">
+      <div class="sectionFrame">
+        <img
+          class="fullCard"
+          src="background_doa.png"
+          alt="Doa background"
+          draggable="false"
+        />
 
-    <!-- RSVP -->
-    <div id="rsvpSection">
-        <a href="https://your-rsvp-link.com" target="_blank">
-            <button>RSVP Now</button>
-        </a>
-    </div>
+        <!-- Text overlay: edit these lines to your actual doa text -->
+        <div class="doaText" id="doaText" aria-label="Doa text">
+          <p class="line">بِسْمِ ٱللَّٰهِ ٱلرَّحْمَـٰنِ ٱلرَّحِيمِ</p>
+          <p class="line">Ya Allah, berkatilah majlis perkahwinan kami.</p>
+          <p class="line">Satukanlah hati kami dalam kasih sayang & rahmat-Mu.</p>
+          <p class="line">Kurniakanlah kebahagiaan, rezeki & keberkatan sepanjang hayat.</p>
+          <p class="line">Amin Ya Rabbal ‘Alamin.</p>
+        </div>
+      </div>
+    </section>
 
-</div>
+    <!-- ===== ACTIONS (Countdown + Map + RSVP) ===== -->
+    <section class="section actions hiddenUntilDoaDone" id="actionsSection">
+      <div class="panel">
+        <h2 class="panelTitle">Countdown</h2>
+        <div class="countdown" id="countdown">
+          <div class="cdItem"><span id="cdDays">0</span><small>Days</small></div>
+          <div class="cdItem"><span id="cdHours">0</span><small>Hours</small></div>
+          <div class="cdItem"><span id="cdMins">0</span><small>Mins</small></div>
+          <div class="cdItem"><span id="cdSecs">0</span><small>Secs</small></div>
+        </div>
 
-<script>
+        <div class="btnRow">
+          <a class="btn gold" href="https://maps.google.com" target="_blank" rel="noopener">
+            📍 Google Map
+          </a>
 
-/* ============ MUSIC ============= */
+          <!-- Replace with your real RSVP link -->
+          <a class="btn gold" href="https://your-rsvp-link.com" target="_blank" rel="noopener">
+            📝 RSVP
+          </a>
+        </div>
+      </div>
+    </section>
 
-let music = document.getElementById("bgMusic");
+    <!-- ===== GALLERY (Swipe slider) ===== -->
+    <section class="section gallery" id="gallerySection">
+      <div class="panel">
+        <h2 class="panelTitle">Gallery</h2>
 
-function toggleMusic() {
-    if (music.paused) {
-        music.play();
-    } else {
-        music.pause();
+        <div class="galleryTrack" id="galleryTrack" aria-label="Swipe gallery">
+          <div class="gallerySlide"><img src="gallery1.jpeg" alt="Gallery 1" /></div>
+          <div class="gallerySlide"><img src="gallery2.jpeg" alt="Gallery 2" /></div>
+          <div class="gallerySlide"><img src="gallery3.jpeg" alt="Gallery 3" /></div>
+          <div class="gallerySlide"><img src="gallery4.jpeg" alt="Gallery 4" /></div>
+        </div>
+
+        <div class="dots" id="dots" aria-label="Gallery navigation">
+          <button class="dot active" type="button" aria-label="Slide 1"></button>
+          <button class="dot" type="button" aria-label="Slide 2"></button>
+          <button class="dot" type="button" aria-label="Slide 3"></button>
+          <button class="dot" type="button" aria-label="Slide 4"></button>
+        </div>
+
+      </div>
+    </section>
+
+    <footer class="footerSpace"></footer>
+  </main>
+
+  <script>
+    // ===== CONFIG =====
+    // Set your wedding date/time here:
+    const weddingDate = new Date("May 2, 2026 11:30:00").getTime();
+
+    // ===== ELEMENTS =====
+    const body = document.body;
+    const sealBtn = document.getElementById("sealBtn");
+    const envelopeImg = document.getElementById("envelopeImg");
+    const flipContainer = document.getElementById("flipContainer");
+    const flipCard = document.getElementById("flipCard");
+    const sparkles = document.getElementById("sparkles");
+
+    const doaSection = document.getElementById("doaSection");
+    const doaText = document.getElementById("doaText");
+    const doaLines = Array.from(doaText.querySelectorAll(".line"));
+    const actionsSection = document.getElementById("actionsSection");
+
+    const galleryTrack = document.getElementById("galleryTrack");
+    const dotsWrap = document.getElementById("dots");
+    const dots = Array.from(dotsWrap.querySelectorAll(".dot"));
+
+    // ===== STATE =====
+    let opened = false;
+    let doaPlayed = false;
+
+    // ===== HELPERS =====
+    function lockScroll(lock) {
+      if (lock) body.classList.add("locked");
+      else body.classList.remove("locked");
     }
-}
 
-/* ============ ENVELOPE OPEN ============= */
+    function startSparkles() {
+      // Clear existing (safe)
+      sparkles.innerHTML = "";
 
-function openEnvelope() {
+      // Create a bunch of sparkle particles
+      const count = 60;
+      for (let i = 0; i < count; i++) {
+        const s = document.createElement("span");
+        s.className = "sparkle";
+        s.style.left = Math.random() * 100 + "%";
+        s.style.top = Math.random() * 100 + "%";
+        s.style.animationDelay = (Math.random() * 2.5) + "s";
+        s.style.animationDuration = (2 + Math.random() * 3) + "s";
+        s.style.opacity = (0.3 + Math.random() * 0.7).toFixed(2);
+        sparkles.appendChild(s);
+      }
 
-    document.getElementById("sealBtn").style.display = "none";
-
-    music.play();
-
-    document.getElementById("card1").classList.add("opened");
-
-    setTimeout(() => {
-        document.getElementById("flipContainer").classList.add("showCard2");
-    }, 1000);
-
-    startSparkles();
-}
-
-/* ============ CARD FLIP ============= */
-
-let flippedOnce = false;
-
-document.getElementById("flipCard").addEventListener("click", function () {
-
-    this.classList.toggle("flipped");
-
-    flippedOnce = true;
-
-    if (flippedOnce) {
-        setTimeout(() => {
-            document.getElementById("mainContent").style.display = "block";
-        }, 1000);
+      sparkles.classList.add("on");
     }
 
-});
-
-/* ============ COUNTDOWN ============= */
-
-var countDownDate = new Date("May 2, 2026 11:30:00").getTime();
-
-var x = setInterval(function() {
-
-  var now = new Date().getTime();
-
-  var distance = countDownDate - now;
-
-  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-  document.getElementById("countdown").innerHTML =
-  days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
-
-}, 1000);
-
-/* ============ GALLERY SWIPE ============= */
-
-let current = 0;
-
-function showImage(index) {
-    let images = document.querySelectorAll(".galleryImage");
-
-    images.forEach(img => img.classList.remove("active"));
-
-    images[index].classList.add("active");
-}
-
-function nextImage() {
-    let images = document.querySelectorAll(".galleryImage");
-    current = (current + 1) % images.length;
-    showImage(current);
-}
-
-function prevImage() {
-    let images = document.querySelectorAll(".galleryImage");
-    current = (current - 1 + images.length) % images.length;
-    showImage(current);
-}
-
-/* ============ SPARKLES ============= */
-
-function startSparkles() {
-
-    for(let i = 0; i < 40; i++) {
-
-        let sparkle = document.createElement("div");
-        sparkle.className = "sparkle";
-
-        sparkle.style.left = Math.random() * 100 + "%";
-        sparkle.style.top = Math.random() * 100 + "%";
-
-        document.getElementById("sparkles").appendChild(sparkle);
+    function revealCardAndEnableFlip() {
+      // card slides up to cover envelope
+      flipContainer.classList.add("show");
+      // after slide completes, allow flip + unlock scrolling
+      setTimeout(() => {
+        flipContainer.classList.add("ready");
+        lockScroll(false);
+      }, 900);
     }
-}
 
-</script>
+    function playDoaText() {
+      if (doaPlayed) return;
+      doaPlayed = true;
+
+      // Reset lines
+      doaLines.forEach(l => l.classList.remove("show"));
+
+      // Reveal one-by-one
+      let i = 0;
+      const step = () => {
+        if (i < doaLines.length) {
+          doaLines[i].classList.add("show");
+          i++;
+          setTimeout(step, 700);
+        } else {
+          // after done -> reveal actions section nicely
+          actionsSection.classList.remove("hiddenUntilDoaDone");
+          actionsSection.classList.add("reveal");
+        }
+      };
+      setTimeout(step, 350);
+    }
+
+    // ===== OPEN ENVELOPE FLOW =====
+    sealBtn.addEventListener("click", () => {
+      if (opened) return;
+      opened = true;
+
+      // lock scroll until card covers envelope
+      lockScroll(true);
+
+      // switch to open envelope image
+      envelopeImg.src = "envelope_open.png";
+      envelopeImg.classList.add("opened");
+
+      // hide seal button
+      sealBtn.classList.add("hide");
+
+      // start endless sparkles
+      startSparkles();
+
+      // slide card up to cover envelope
+      setTimeout(() => {
+        revealCardAndEnableFlip();
+      }, 500);
+    });
+
+    // ===== FLIP CARD (card1 <-> card2) =====
+    flipContainer.addEventListener("click", () => {
+      if (!flipContainer.classList.contains("ready")) return;
+      flipCard.classList.toggle("flipped");
+    });
+
+    // ===== DOA TEXT: start when doa section enters viewport =====
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          playDoaText();
+        }
+      });
+    }, { threshold: 0.45 });
+
+    io.observe(doaSection);
+
+    // ===== COUNTDOWN =====
+    function pad2(n) { return String(n).padStart(2, "0"); }
+
+    function tickCountdown() {
+      const now = Date.now();
+      const dist = weddingDate - now;
+
+      const days = Math.max(0, Math.floor(dist / (1000 * 60 * 60 * 24)));
+      const hours = Math.max(0, Math.floor((dist % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)));
+      const mins  = Math.max(0, Math.floor((dist % (1000 * 60 * 60)) / (1000 * 60)));
+      const secs  = Math.max(0, Math.floor((dist % (1000 * 60)) / 1000));
+
+      document.getElementById("cdDays").textContent = days;
+      document.getElementById("cdHours").textContent = pad2(hours);
+      document.getElementById("cdMins").textContent = pad2(mins);
+      document.getElementById("cdSecs").textContent = pad2(secs);
+    }
+    tickCountdown();
+    setInterval(tickCountdown, 1000);
+
+    // ===== GALLERY DOTS SYNC =====
+    function setActiveDot(idx) {
+      dots.forEach((d, i) => d.classList.toggle("active", i === idx));
+    }
+
+    // click dot -> scroll to slide
+    dots.forEach((dot, idx) => {
+      dot.addEventListener("click", () => {
+        const slideW = galleryTrack.clientWidth;
+        galleryTrack.scrollTo({ left: slideW * idx, behavior: "smooth" });
+        setActiveDot(idx);
+      });
+    });
+
+    // scroll -> update dot
+    let scrollTimer = null;
+    galleryTrack.addEventListener("scroll", () => {
+      window.clearTimeout(scrollTimer);
+      scrollTimer = window.setTimeout(() => {
+        const slideW = galleryTrack.clientWidth;
+        const idx = Math.round(galleryTrack.scrollLeft / slideW);
+        setActiveDot(Math.max(0, Math.min(dots.length - 1, idx)));
+      }, 80);
+    });
+  </script>
 
 </body>
 </html>
