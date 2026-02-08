@@ -1,101 +1,88 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Wedding Invitation</title>
 
 <link rel="stylesheet" href="style.css">
+
 </head>
 
 <body>
 
 <!-- MUSIC -->
 <audio id="bgMusic" loop>
-    <source src="music.mp3" type="audio/mp3">
+    <source src="music.mp3" type="audio/mpeg">
 </audio>
 
 <button id="musicBtn" onclick="toggleMusic()">🔊</button>
 
-<!-- COVER PAGE -->
-<div id="coverPage">
-    <img src="cover.png" class="cover-image">
-
-    <button id="sealBtn" onclick="openEnvelope()">Open Invitation</button>
-</div>
-
 <!-- ENVELOPE SECTION -->
 <div id="envelopeSection">
 
-    <div id="envelope">
-        <img src="card1.png" id="card1">
-    </div>
+    <button id="sealBtn" onclick="openEnvelope()">Open Invitation</button>
 
-    <!-- FLIP CARD 2 -->
-    <div id="card2-container">
+    <img id="card1" src="card1.png">
 
-        <div class="flip-card" onclick="flipCard()">
-            <div class="flip-card-inner" id="flipCardInner">
-
-                <div class="flip-card-front">
-                    <img src="card2.png" class="card-image">
-                </div>
-
-                <div class="flip-card-back">
-                    <img src="card2_2.png" class="card-image">
-                </div>
-
-            </div>
+    <!-- FLIP CARD2 CONTAINER -->
+    <div id="flipContainer">
+        <div id="flipCard">
+            <img id="front" src="card2.png">
+            <img id="back" src="card2_2.png">
         </div>
-
-    </div>
-
-</div>
-
-<!-- CONTENT AFTER CARDS -->
-<div id="mainContent">
-
-    <!-- COUNTDOWN -->
-    <div class="section">
-        <h2>Countdown to Our Big Day</h2>
-        <div id="countdown"></div>
-    </div>
-
-    <!-- MAP + RSVP -->
-    <div class="section">
-        <a href="https://goo.gl/maps/example" class="mapBtn">📍 Open Google Map</a>
-
-        <a href="https://forms.gle/example" class="rsvpBtn">📝 RSVP Now</a>
-    </div>
-
-    <!-- GALLERY SLIDER -->
-    <div class="section">
-        <h2>Gallery</h2>
-
-        <div class="gallery-container">
-            <div class="gallery-slider" id="gallerySlider">
-
-                <img src="gallery1.jpg">
-                <img src="gallery2.jpg">
-                <img src="gallery3.jpg">
-                <img src="gallery4.jpg">
-
-            </div>
-
-            <button class="prev" onclick="prevSlide()">❮</button>
-            <button class="next" onclick="nextSlide()">❯</button>
-        </div>
-
     </div>
 
 </div>
 
 <!-- SPARKLE EFFECT -->
-<div id="sparkleContainer"></div>
+<div id="sparkles"></div>
+
+<!-- MAIN SCROLLABLE CONTENT -->
+<div id="mainContent">
+
+    <img src="card3.png" class="content-card">
+    <img src="card4.png" class="content-card">
+
+    <!-- COUNTDOWN -->
+    <div id="countdownSection">
+        <h2>Countdown to Our Big Day</h2>
+        <div id="countdown"></div>
+    </div>
+
+    <!-- GALLERY -->
+    <div id="gallerySection">
+        <h2>Gallery</h2>
+
+        <div class="gallery-slider">
+            <img class="galleryImage active" src="gallery1.jpg">
+            <img class="galleryImage" src="gallery2.jpg">
+            <img class="galleryImage" src="gallery3.jpg">
+        </div>
+
+        <button onclick="prevImage()">◀</button>
+        <button onclick="nextImage()">▶</button>
+    </div>
+
+    <!-- MAP -->
+    <div id="mapSection">
+        <a href="https://maps.google.com" target="_blank">
+            <button>Open Google Map</button>
+        </a>
+    </div>
+
+    <!-- RSVP -->
+    <div id="rsvpSection">
+        <a href="https://your-rsvp-link.com" target="_blank">
+            <button>RSVP Now</button>
+        </a>
+    </div>
+
+</div>
 
 <script>
 
-// ===== MUSIC CONTROL =====
+/* ============ MUSIC ============= */
+
 let music = document.getElementById("bgMusic");
 
 function toggleMusic() {
@@ -106,80 +93,100 @@ function toggleMusic() {
     }
 }
 
-// ===== OPEN ENVELOPE =====
+/* ============ ENVELOPE OPEN ============= */
+
 function openEnvelope() {
 
-    document.getElementById("coverPage").style.display = "none";
-
-    document.getElementById("envelopeSection").classList.add("open");
+    document.getElementById("sealBtn").style.display = "none";
 
     music.play();
 
+    document.getElementById("card1").classList.add("opened");
+
     setTimeout(() => {
-        document.getElementById("mainContent").style.display = "block";
-    }, 2500);
+        document.getElementById("flipContainer").classList.add("showCard2");
+    }, 1000);
+
+    startSparkles();
 }
 
-// ===== FLIP CARD =====
-function flipCard() {
-    document.querySelector('.flip-card').classList.toggle('flipped');
-}
+/* ============ CARD FLIP ============= */
 
-// ===== COUNTDOWN =====
-let countDate = new Date("May 2, 2026 11:00:00").getTime();
+let flippedOnce = false;
 
-let x = setInterval(function () {
+document.getElementById("flipCard").addEventListener("click", function () {
 
-    let now = new Date().getTime();
-    let distance = countDate - now;
+    this.classList.toggle("flipped");
 
-    let days = Math.floor(distance / (1000 * 60 * 60 * 24));
+    flippedOnce = true;
 
-    document.getElementById("countdown").innerHTML =
-        days + " days remaining";
+    if (flippedOnce) {
+        setTimeout(() => {
+            document.getElementById("mainContent").style.display = "block";
+        }, 1000);
+    }
+
+});
+
+/* ============ COUNTDOWN ============= */
+
+var countDownDate = new Date("May 2, 2026 11:30:00").getTime();
+
+var x = setInterval(function() {
+
+  var now = new Date().getTime();
+
+  var distance = countDownDate - now;
+
+  var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+  var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+  var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+  document.getElementById("countdown").innerHTML =
+  days + "d " + hours + "h " + minutes + "m " + seconds + "s ";
 
 }, 1000);
 
-// ===== GALLERY SLIDER =====
-let index = 0;
+/* ============ GALLERY SWIPE ============= */
 
-function nextSlide() {
-    index++;
-    updateSlider();
+let current = 0;
+
+function showImage(index) {
+    let images = document.querySelectorAll(".galleryImage");
+
+    images.forEach(img => img.classList.remove("active"));
+
+    images[index].classList.add("active");
 }
 
-function prevSlide() {
-    index--;
-    updateSlider();
+function nextImage() {
+    let images = document.querySelectorAll(".galleryImage");
+    current = (current + 1) % images.length;
+    showImage(current);
 }
 
-function updateSlider() {
-
-    let slider = document.getElementById("gallerySlider");
-    let total = slider.children.length;
-
-    if (index >= total) index = 0;
-    if (index < 0) index = total - 1;
-
-    slider.style.transform =
-        "translateX(-" + index * 100 + "%)";
+function prevImage() {
+    let images = document.querySelectorAll(".galleryImage");
+    current = (current - 1 + images.length) % images.length;
+    showImage(current);
 }
 
-// ===== SPARKLE EFFECT =====
-function createSparkle() {
+/* ============ SPARKLES ============= */
 
-    let sparkle = document.createElement("div");
-    sparkle.className = "sparkle";
+function startSparkles() {
 
-    sparkle.style.left = Math.random() * 100 + "%";
-    sparkle.style.top = Math.random() * 100 + "%";
+    for(let i = 0; i < 40; i++) {
 
-    document.getElementById("sparkleContainer").appendChild(sparkle);
+        let sparkle = document.createElement("div");
+        sparkle.className = "sparkle";
 
-    setTimeout(() => sparkle.remove(), 3000);
+        sparkle.style.left = Math.random() * 100 + "%";
+        sparkle.style.top = Math.random() * 100 + "%";
+
+        document.getElementById("sparkles").appendChild(sparkle);
+    }
 }
-
-setInterval(createSparkle, 300);
 
 </script>
 
