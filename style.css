@@ -17,7 +17,6 @@ body{
   overflow-x: hidden;
 }
 
-/* Disable scroll until seal clicked */
 body.locked{
   height: 100vh;
   overflow: hidden;
@@ -68,7 +67,7 @@ body.locked{
   to  { opacity:1; transform: translateY(0) scale(1); }
 }
 
-/* Invisible button positioned on seal area */
+/* invisible seal click area */
 #sealBtn{
   position:absolute;
   width: 96px;
@@ -82,13 +81,11 @@ body.locked{
   cursor:pointer;
   outline: none;
 }
-
-/* tap feedback (premium) */
 #sealBtn:active{
   transform: translate(-50%, -50%) scale(0.97);
 }
 
-/* ===== CARD LAYER (slides up to cover envelope) ===== */
+/* ===== CARD LAYER (covers envelope) ===== */
 .cardLayer{
   position:absolute;
   inset: 0;
@@ -98,18 +95,34 @@ body.locked{
   justify-content:center;
   opacity:0;
   pointer-events:none;
-  transform: translateY(16%);
-  transition: 950ms cubic-bezier(.16,.84,.15,1);
   z-index: 5;
 }
 
+/* show card layer */
 .cardLayer.show{
   opacity:1;
-  pointer-events:auto;
-  transform: translateY(0);
 }
 
-/* ===== FLIP (your structure, fixed height issue using GRID) ===== */
+/* fly up animation (starts from below) */
+.cardLayer.flyUp{
+  pointer-events:none;
+  transform: translateY(28%);
+  animation: flyUpCover 900ms cubic-bezier(.16,.84,.15,1) both;
+}
+
+@keyframes flyUpCover{
+  0%   { transform: translateY(38%); opacity: 0; }
+  35%  { opacity: 1; }
+  100% { transform: translateY(0%); opacity: 1; }
+}
+
+.cardLayer.ready{
+  pointer-events:auto;
+  transform: translateY(0);
+  animation: none;
+}
+
+/* ===== FLIP (your structure) ===== */
 .flip-container{
   width: 100%;
   perspective: 1200px;
@@ -117,7 +130,7 @@ body.locked{
 }
 
 .flipper{
-  display: grid;              /* IMPORTANT: keeps height from images */
+  display: grid;
   transform-style: preserve-3d;
   transition: transform 920ms cubic-bezier(.2,.85,.2,1);
   border-radius: var(--cardRadius);
@@ -127,6 +140,7 @@ body.locked{
 .front, .back{
   grid-area: 1 / 1;
   backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
   border-radius: var(--cardRadius);
   overflow: hidden;
 }
@@ -138,13 +152,9 @@ body.locked{
   border-radius: var(--cardRadius);
 }
 
-.back{
-  transform: rotateY(180deg);
-}
+.back{ transform: rotateY(180deg); }
 
-.flipper.flip{
-  transform: rotateY(180deg);
-}
+.flipper.flip{ transform: rotateY(180deg); }
 
 .flipHint{
   margin-top: 10px;
@@ -188,29 +198,24 @@ body.locked{
   align-items:center;
 }
 
-/* Same box size, wrap the text inside */
+/* same size boxes; wrap text */
 .doaText .line{
   width: min(92%, 520px);
   min-height: 52px;
   padding: 12px 14px;
   border-radius: 16px;
-
   background: var(--glass2);
   backdrop-filter: blur(10px);
-
-  font-weight: 800;                /* bold */
+  font-weight: 800;
   line-height: 1.25;
   text-align:center;
 
-  /* wrapping */
   white-space: normal;
   overflow-wrap: anywhere;
   word-break: break-word;
 
-  /* responsive font */
   font-size: clamp(13px, 3.2vw, 18px);
 
-  /* reveal animation */
   opacity: 0;
   transform: translateY(10px);
   transition: 620ms ease;
@@ -286,51 +291,98 @@ body.locked{
   background: linear-gradient(45deg, #d8c07a, #f2e2a7);
 }
 
-/* ===== GALLERY ===== */
+/* ===== GALLERY (ONE AT A TIME) ===== */
 .gallerySection{
   padding: 26px 0 60px;
+  text-align:center;
 }
 
-.galleryViewport{
-  width: 100%;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
-
-.galleryViewport::-webkit-scrollbar{ height: 0; }
-
-.galleryTrack{
-  display:flex;
-  gap: 14px;
-  padding: 0 14px;
-}
-
-.gallerySlide{
-  scroll-snap-align: center;
-  flex: 0 0 86%;
-  width: 86%;
-  height: min(70vh, 520px);
-  border-radius: 22px;
-  overflow:hidden;
-  background: rgba(255,255,255,0.35);
-  backdrop-filter: blur(10px);
-  box-shadow: var(--shadow);
+.galleryShell{
+  width: min(94vw, 860px);
+  margin: 0 auto;
+  position: relative;
   display:flex;
   align-items:center;
   justify-content:center;
+  gap: 10px;
+}
+
+.galleryViewport{
+  width: min(94vw, 680px);
+  overflow: hidden;                 /* IMPORTANT: one frame */
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+  background: rgba(255,255,255,0.28);
+}
+
+.galleryTrack{
+  display:flex;
+  width: 100%;
+  transform: translate3d(0,0,0);
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  overflow: hidden;
+}
+
+.gallerySlide{
+  flex: 0 0 100%;                   /* one at a time */
+  width: 100%;
+  height: min(70vh, 520px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  scroll-snap-align: start;
+  background: rgba(255,255,255,0.18);
 }
 
 .gallerySlide img{
   width: 100%;
   height: 100%;
-  object-fit: contain; /* show full orientation, no crop */
+  object-fit: contain;              /* full orientation */
   display:block;
+}
+
+/* nav buttons */
+.galleryNav{
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  font-size: 28px;
+  line-height: 1;
+  color: #1a1306;
+  background: rgba(255,255,255,0.65);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 34px rgba(0,0,0,0.18);
+  user-select: none;
+}
+.galleryNav:disabled{
+  opacity: 0.35;
+  cursor: default;
+}
+
+.galleryDots{
+  margin-top: 12px;
+  display:flex;
+  justify-content:center;
+  gap: 10px;
+}
+.gdot{
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0,0,0,0.22);
+  cursor: pointer;
+}
+.gdot.active{
+  background: rgba(202,163,77,0.95);
+  box-shadow: 0 0 0 4px rgba(202,163,77,0.18);
 }
 
 .galleryHint{
   margin-top: 10px;
-  text-align:center;
   font-weight: 800;
   font-size: 13px;
   opacity: 0.85;
@@ -381,13 +433,9 @@ body.locked{
   transform: scale(0.96);
 }
 
-/* ===== Desktop tweaks ===== */
+/* Desktop tweaks */
 @media (min-width: 900px){
-  .ctaRow{
-    flex-direction: row;
-    justify-content: center;
-  }
+  .ctaRow{ flex-direction: row; justify-content:center; }
   .btn{ width: 260px; }
   .eventTime{ width: 520px; }
-  .gallerySlide{ flex-basis: 520px; width: 520px; }
 }
