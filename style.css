@@ -317,12 +317,16 @@ body.locked{
   box-shadow:var(--shadow);
   background:rgba(255,255,255,.28);
   contain:layout paint;
+
+  /* IMPORTANT: keeps vertical scroll smooth while enabling horizontal swipe */
+  touch-action:pan-y;
 }
 
 .galleryTrack{
   display:flex;
   width:100%;
   will-change:transform;
+  transition:transform .35s ease;
 }
 
 .gallerySlide{
