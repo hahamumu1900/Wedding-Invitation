@@ -5,254 +5,362 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Wedding Invitation</title>
   <link rel="stylesheet" href="style.css" />
+
+  <!-- Preload key images for smoother animation -->
+  <link rel="preload" as="image" href="bg-floral.png" />
+  <link rel="preload" as="image" href="envelope.png" />
+  <link rel="preload" as="image" href="envelope_open.png" />
+  <link rel="preload" as="image" href="card1.png" />
+  <link rel="preload" as="image" href="card2.png" />
+  <link rel="preload" as="image" href="background_doa.png" />
 </head>
 
 <body class="locked">
-  <!-- sparkles -->
-  <div id="sparkles"></div>
 
-  <!-- music -->
-  <audio id="bgm" src="music.mp3" loop></audio>
+  <!-- Sparkles overlay -->
+  <div id="sparkles" aria-hidden="true"></div>
 
-  <!-- music toggle -->
-  <button id="musicBtn" class="musicBtn" aria-label="Toggle music">🔊</button>
+  <!-- Background music -->
+  <audio id="bgm" src="music.mp3" preload="auto" loop></audio>
+
+  <!-- Sound toggle (hidden until opened) -->
+  <button id="soundToggle" class="soundToggle hidden" type="button" aria-label="Toggle sound">
+    <span class="soundIcon" aria-hidden="true"></span>
+  </button>
 
   <main class="page">
-    <!-- ENVELOPE STAGE -->
-    <section class="stage">
+
+    <!-- ===== HERO / ENVELOPE STAGE ===== -->
+    <section class="stage" id="stage">
       <div class="frame">
-        <img id="envelopeImg" class="envelope" src="envelope.png" alt="Envelope" />
 
-        <!-- seal click area (no visible text) -->
-        <button id="sealBtn" class="sealBtn" aria-label="Open envelope"></button>
+        <!-- Envelope image -->
+        <img
+          id="envelopeImg"
+          class="envelopeImg"
+          src="envelope.png"
+          alt="Sealed envelope"
+          draggable="false"
+        />
 
-        <!-- flip card (card1 <-> card2) -->
-        <div id="flipContainer" class="flipContainer" aria-label="Invitation card">
-          <div id="flipCard" class="flipCard" role="button" aria-label="Flip card">
-            <img class="cardFace" src="card1.png" alt="Card front" />
-            <img class="cardFace cardBack" src="card2.png" alt="Card back" />
+        <!-- Invisible hit-area over the seal (NO text) -->
+        <button id="sealBtn" class="sealHit" type="button" aria-label="Open envelope"></button>
+
+        <!-- Flip card (slides up to cover envelope) -->
+        <div id="flipContainer" class="flipContainer" aria-label="Invitation card (tap to flip)">
+          <div id="flipCard" class="flipCard" role="button" tabindex="0" aria-label="Tap to flip card">
+            <img class="cardFace cardFront" src="card1.png" alt="Card front" draggable="false" />
+            <img class="cardFace cardBack"  src="card2.png" alt="Card back"  draggable="false" />
           </div>
           <div class="flipHint">Tap card to flip</div>
         </div>
+
       </div>
     </section>
 
-    <!-- DOA -->
+    <!-- ===== DOA SECTION ===== -->
     <section class="section doa" id="doaSection">
       <div class="sectionFrame">
-        <img class="fullCard" src="background_doa.png" alt="Doa background" />
+        <img
+          class="fullCard"
+          src="background_doa.png"
+          alt="Doa background"
+          draggable="false"
+        />
 
-        <!-- Text overlay (bold + readable) -->
-        <div class="doaText" id="doaText">
-          <p class="line"><b>وَوَمِنْ ءَايَـٰتِهِۦٓ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَٰجًۭا لِّتَسْكُنُوٓا۟ إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةًۭ وَرَحْمَةً ۚ إِنَّ فِى ذَٰلِكَ لَـَٔايَـٰتٍۢ لِّقَوْمٍۢ يَتَفَكَّرُونَ ٢١</b></p>
-          <p class="line"><b>(30:21) And of His signs is that He created for you from yourselves mates that you may find tranquility in them;</b></p>
-          <p class="line"><b>and He placed between you affection and mercy. Verily in that are signs for those who reflect.</b></p>
-          <p class="line"><b>۞ هُوَ ٱلَّذِى خَلَقَكُم مِّن نَّفْسٍۢ وَٰحِدَةٍۢ وَجَعَلَ مِنْهَا زَوْجَهَا لِيَسْكُنَ إِلَيْهَا ۖ فَلَمَّا تَغَشَّىٰهَا حَمَلَتْ حَمْلًا خَفِيفًۭا فَمَرَّتْ بِهِۦ ۖ فَلَمَّآ أَثْقَلَت دَّعَوَا ٱللَّهَ رَبَّهُمَا لَئِنْ ءَاتَيْتَنَا صَـٰلِحًۭا لَّنَكُونَنَّ مِنَ ٱلشَّـٰكِرِينَ ١٨٩</b></p>
-          <p class="line"><b>(7:189)It is He who created you from one soul and created from it its mate that he might dwell in security with her.</b></p>
-          <p class="line"><b>And when he covers her, she carries a light burden and continues therein.</b></p>
-          <p class="line"><b>And when it becomes heavy, they both invoke Allah, their Lord, “If You should give us a good [child], we will surely be among the grateful.</b></p>
+        <!-- Doa text overlay (reveals line-by-line on scroll) -->
+        <div class="doaText" id="doaText" aria-label="Doa text">
+          <!-- Replace these lines with your real text if you want -->
+          <div class="doaLine" data-i="1">وَمِنْ ءَايَـٰتِهِۦٓ أَنْ خَلَقَ لَكُم مِّنْ أَنفُسِكُمْ أَزْوَٰجًۭا لِّتَسْكُنُوٓا۟ إِلَيْهَا وَجَعَلَ بَيْنَكُم مَّوَدَّةًۭ وَرَحْمَةً ۚ إِنَّ فِى ذَٰلِكَ لَـَٔايَـٰتٍۢ لِّقَوْمٍۢ يَتَفَكَّرُونَ ٢١</div>
+          <div class="doaLine" data-i="2">(30:21) And of His signs is that He created for you from yourselves mates that you may find tranquility in them;</div>
+          <div class="doaLine" data-i="3">and He placed between you affection and mercy. Verily in that are signs for those who reflect.</div>
+          <div class="doaLine" data-i="1">۞ هُوَ ٱلَّذِى خَلَقَكُم مِّن نَّفْسٍۢ وَٰحِدَةٍۢ وَجَعَلَ مِنْهَا زَوْجَهَا لِيَسْكُنَ إِلَيْهَا ۖ فَلَمَّا تَغَشَّىٰهَا حَمَلَتْ حَمْلًا خَفِيفًۭا فَمَرَّتْ بِهِۦ ۖ فَلَمَّآ أَثْقَلَت دَّعَوَا ٱللَّهَ رَبَّهُمَا لَئِنْ ءَاتَيْتَنَا صَـٰلِحًۭا لَّنَكُونَنَّ مِنَ ٱلشَّـٰكِرِينَ ١٨٩</div>
+          <div class="doaLine" data-i="1">(7:189)It is He who created you from one soul and created from it its mate that he might dwell in security with her.</div>
+          <div class="doaLine" data-i="1">And when he covers her, she carries a light burden and continues therein.</div>
+          <div class="doaLine" data-i="1">And when it becomes heavy, they both invoke Allah, their Lord, “If You should give us a good [child], we will surely be among the grateful.</div>
         </div>
       </div>
     </section>
 
-    <!-- ACTIONS -->
-    <section class="section actions" id="actionsSection">
-      <div class="panel">
-        <h2 class="panelTitle">Countdown</h2>
+    <!-- ===== ACTIONS / COUNTDOWN / BUTTONS ===== -->
+    <section class="section actions hiddenUntilOpened" id="actionsSection">
+      <div class="glassCard">
+        <h2 class="sectionTitle">Counting Down</h2>
 
-        <div class="countdown">
-          <div class="cdItem"><span id="cdDays">0</span><small>Days</small></div>
-          <div class="cdItem"><span id="cdHours">0</span><small>Hours</small></div>
-          <div class="cdItem"><span id="cdMins">0</span><small>Mins</small></div>
-          <div class="cdItem"><span id="cdSecs">0</span><small>Secs</small></div>
+        <div class="countdown" aria-label="Countdown timer">
+          <div class="cdBox"><span id="cdDays" class="cdNum">00</span><span class="cdLbl">Days</span></div>
+          <div class="cdBox"><span id="cdHours" class="cdNum">00</span><span class="cdLbl">Hours</span></div>
+          <div class="cdBox"><span id="cdMins" class="cdNum">00</span><span class="cdLbl">Mins</span></div>
+          <div class="cdBox"><span id="cdSecs" class="cdNum">00</span><span class="cdLbl">Secs</span></div>
         </div>
 
-        <!-- ✅ Event date/time (added) -->
-        <div class="eventInfo">
-          <span class="eventLine">📅 Sabtu • 2 Mei 2026</span>
-          <span class="eventLine">⏰ 11:30 AM – 3:30 PM</span>
+        <!-- Event date/time below countdown -->
+        <div class="eventInfo" id="eventInfo">
+          <div class="eventLine">🗓️ Sabtu • 2 Mei 2026</div>
+          <div class="eventLine">⏰ 11:30 AM – 3:30 PM</div>
         </div>
 
         <div class="btnRow">
-          <a class="btn gold" target="_blank" rel="noopener"
-             href="https://maps.app.goo.gl/8GJP5vLRk6EGKELW9">
-            📍 Google Map
+          <!-- Put your actual Google Maps link here -->
+          <a class="pillBtn" href="https://maps.google.com" target="_blank" rel="noopener">
+            📍 Buka Google Map
           </a>
 
-          <!-- IMPORTANT: replace YOUR_RSVP_LINK -->
-          <a class="btn gold" target="_blank" rel="noopener"
-             href="YOUR_RSVP_LINK">
-            📝 RSVP
+          <!-- Put your actual RSVP link here -->
+          <a class="pillBtn" href="https://forms.gle/" target="_blank" rel="noopener">
+            📝 RSVP Sekarang
           </a>
         </div>
       </div>
     </section>
 
-    <!-- GALLERY (swipe slider) -->
-    <section class="section gallery">
-      <div class="panel">
-        <h2 class="panelTitle">Gallery</h2>
+    <!-- ===== GALLERY (SWIPE SLIDER) ===== -->
+    <section class="section gallery hiddenUntilOpened" id="gallerySection">
+      <div class="glassCard">
+        <h2 class="sectionTitle">Gallery</h2>
 
-        <div class="galleryTrack" id="galleryTrack" aria-label="Gallery slider">
-          <div class="gallerySlide"><img src="gallery1.jpeg" alt="Gallery 1"></div>
-          <div class="gallerySlide"><img src="gallery2.jpeg" alt="Gallery 2"></div>
-          <div class="gallerySlide"><img src="gallery3.jpeg" alt="Gallery 3"></div>
-          <div class="gallerySlide"><img src="gallery4.jpeg" alt="Gallery 4"></div>
+        <div class="galleryViewport" aria-label="Swipe gallery">
+          <div class="galleryTrack" id="galleryTrack">
+            <div class="slide"><img src="gallery1.jpeg" alt="Gallery 1" draggable="false"></div>
+            <div class="slide"><img src="gallery2.jpeg" alt="Gallery 2" draggable="false"></div>
+            <div class="slide"><img src="gallery3.jpeg" alt="Gallery 3" draggable="false"></div>
+            <div class="slide"><img src="gallery4.jpeg" alt="Gallery 4" draggable="false"></div>
+          </div>
         </div>
 
-        <div class="dots" id="dots" aria-label="Gallery dots">
-          <button class="dot active" aria-label="Slide 1"></button>
-          <button class="dot" aria-label="Slide 2"></button>
-          <button class="dot" aria-label="Slide 3"></button>
-          <button class="dot" aria-label="Slide 4"></button>
+        <div class="dots" id="dots" aria-label="Gallery pagination">
+          <button class="dot isActive" data-idx="0" aria-label="Go to slide 1"></button>
+          <button class="dot" data-idx="1" aria-label="Go to slide 2"></button>
+          <button class="dot" data-idx="2" aria-label="Go to slide 3"></button>
+          <button class="dot" data-idx="3" aria-label="Go to slide 4"></button>
         </div>
       </div>
     </section>
 
-    <footer class="footerSpace"></footer>
   </main>
 
   <script>
+    // ===== CONFIG =====
     const weddingDate = new Date("May 2, 2026 11:30:00").getTime();
 
+    // ===== ELEMENTS =====
     const body = document.body;
     const sealBtn = document.getElementById("sealBtn");
-    const envelope = document.getElementById("envelopeImg");
+    const envelopeImg = document.getElementById("envelopeImg");
+
     const flipContainer = document.getElementById("flipContainer");
     const flipCard = document.getElementById("flipCard");
+
     const sparkles = document.getElementById("sparkles");
 
-    const music = document.getElementById("bgm");
-    const musicBtn = document.getElementById("musicBtn");
+    const bgm = document.getElementById("bgm");
+    const soundToggle = document.getElementById("soundToggle");
 
-    // lock scroll until seal is tapped
-    function lockScroll() {
-      body.classList.add("locked");
-      window.scrollTo(0, 0);
+    const actionsSection = document.getElementById("actionsSection");
+    const gallerySection = document.getElementById("gallerySection");
+
+    const doaLines = Array.from(document.querySelectorAll(".doaLine"));
+
+    const galleryTrack = document.getElementById("galleryTrack");
+    const dotsWrap = document.getElementById("dots");
+    const dots = Array.from(dotsWrap.querySelectorAll(".dot"));
+
+    // ===== STATE =====
+    let opened = false;
+    let galleryIndex = 0;
+
+    // ===== HELPERS =====
+    function lockScroll(lock) {
+      if (lock) body.classList.add("locked");
+      else body.classList.remove("locked");
     }
-    function unlockScroll() {
-      body.classList.remove("locked");
-    }
-    lockScroll();
 
-    // seal click: open envelope, start sparkle, start music, show flip card, enable scroll
-    sealBtn.addEventListener("click", () => {
-      envelope.src = "envelope_open.png";
-      sealBtn.style.display = "none";
-
-      startSparkles();
-
-      music.play().then(() => {
-        musicBtn.textContent = "🔊";
-      }).catch(() => {
-        // autoplay might be blocked on some browsers; button still works
-      });
-
-      unlockScroll();
-      flipContainer.classList.add("show");
-    });
-
-    // flip card
-    flipCard.addEventListener("click", () => {
-      flipCard.classList.toggle("flipped");
-    });
-
-    // music toggle button
-    musicBtn.addEventListener("click", () => {
-      if (music.paused) {
-        music.play().catch(() => {});
-        musicBtn.textContent = "🔊";
-      } else {
-        music.pause();
-        musicBtn.textContent = "🔈";
-      }
-    });
-
-    // sparkles
     function startSparkles() {
       sparkles.innerHTML = "";
-      for (let i = 0; i < 60; i++) {
+      const count = 70;
+      for (let i = 0; i < count; i++) {
         const s = document.createElement("span");
         s.className = "sparkle";
         s.style.left = Math.random() * 100 + "%";
         s.style.top = Math.random() * 100 + "%";
-        s.style.animationDuration = (2 + Math.random() * 3) + "s";
-        s.style.animationDelay = (Math.random() * 2) + "s";
+        s.style.animationDelay = (Math.random() * 2.2) + "s";
+        s.style.animationDuration = (2.2 + Math.random() * 3.2) + "s";
+        s.style.opacity = (0.25 + Math.random() * 0.75).toFixed(2);
+        s.style.transform = `translate3d(0,0,0) scale(${0.6 + Math.random() * 1.4})`;
         sparkles.appendChild(s);
       }
       sparkles.classList.add("on");
     }
 
-    // countdown
-    function updateCountdown() {
-      const d = weddingDate - Date.now();
-      const days = Math.max(0, Math.floor(d / 86400000));
-      const hours = Math.max(0, Math.floor(d / 3600000) % 24);
-      const mins = Math.max(0, Math.floor(d / 60000) % 60);
-      const secs = Math.max(0, Math.floor(d / 1000) % 60);
-
-      document.getElementById("cdDays").textContent = days;
-      document.getElementById("cdHours").textContent = hours;
-      document.getElementById("cdMins").textContent = mins;
-      document.getElementById("cdSecs").textContent = secs;
-    }
-    updateCountdown();
-    setInterval(updateCountdown, 1000);
-
-    // gallery swipe slider
-    const track = document.getElementById("galleryTrack");
-    const dots = Array.from(document.querySelectorAll("#dots .dot"));
-    let index = 0;
-
-    function setSlide(i) {
-      index = Math.max(0, Math.min(i, 3));
-      track.style.transform = `translateX(${-index * 100}%)`;
-      dots.forEach((d, di) => d.classList.toggle("active", di === index));
+    function showOpenedSections() {
+      actionsSection.classList.remove("hiddenUntilOpened");
+      gallerySection.classList.remove("hiddenUntilOpened");
+      actionsSection.classList.add("reveal");
+      gallerySection.classList.add("reveal");
     }
 
-    dots.forEach((d, i) => d.addEventListener("click", () => setSlide(i)));
+    function revealCardAndEnableFlip() {
+      // slide card up to cover envelope
+      flipContainer.classList.add("show");
+      setTimeout(() => {
+        flipContainer.classList.add("ready");
+        // enable scroll only after the main animation is done
+        lockScroll(false);
+        showOpenedSections();
+      }, 950);
+    }
 
-    // touch swipe
-    let startX = 0;
-    let isDown = false;
-
-    track.addEventListener("touchstart", (e) => {
-      isDown = true;
-      startX = e.touches[0].clientX;
-    }, { passive: true });
-
-    track.addEventListener("touchend", (e) => {
-      if (!isDown) return;
-      isDown = false;
-      const endX = (e.changedTouches && e.changedTouches[0]) ? e.changedTouches[0].clientX : startX;
-      const dx = endX - startX;
-
-      if (Math.abs(dx) > 40) {
-        if (dx < 0) setSlide(index + 1);
-        else setSlide(index - 1);
+    async function startMusic() {
+      try {
+        bgm.muted = false;
+        await bgm.play();
+        soundToggle.classList.remove("hidden");
+        soundToggle.classList.remove("muted");
+      } catch (e) {
+        // Autoplay might be blocked on some devices; user can manually toggle
+        soundToggle.classList.remove("hidden");
+        soundToggle.classList.add("muted");
       }
-    }, { passive: true });
+    }
 
-    // optional: mouse drag swipe (desktop)
-    track.addEventListener("mousedown", (e) => {
-      isDown = true;
-      startX = e.clientX;
+    function toggleSound() {
+      if (bgm.paused) {
+        bgm.play().then(() => {
+          soundToggle.classList.remove("muted");
+        }).catch(() => {});
+      } else {
+        bgm.pause();
+        soundToggle.classList.add("muted");
+      }
+    }
+
+    // ===== OPEN ENVELOPE FLOW =====
+    sealBtn.addEventListener("click", async () => {
+      if (opened) return;
+      opened = true;
+
+      lockScroll(true);
+
+      envelopeImg.src = "envelope_open.png";
+      envelopeImg.classList.add("opened");
+
+      sealBtn.classList.add("hide");
+
+      startSparkles();
+      await startMusic();
+
+      setTimeout(() => {
+        revealCardAndEnableFlip();
+      }, 500);
     });
-    window.addEventListener("mouseup", (e) => {
-      if (!isDown) return;
-      isDown = false;
-      const dx = e.clientX - startX;
-      if (Math.abs(dx) > 60) {
-        if (dx < 0) setSlide(index + 1);
-        else setSlide(index - 1);
+
+    // ===== FLIP CARD (card1 <-> card2) =====
+    function flipNow() {
+      if (!flipContainer.classList.contains("ready")) return;
+      flipCard.classList.toggle("flipped");
+    }
+
+    flipContainer.addEventListener("click", flipNow);
+    flipCard.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        flipNow();
       }
     });
 
-    // keep user at top when locked
-    window.addEventListener("scroll", () => {
-      if (body.classList.contains("locked")) window.scrollTo(0, 0);
+    // ===== SOUND TOGGLE =====
+    soundToggle.addEventListener("click", toggleSound);
+
+    // ===== DOA TEXT: reveal per-line as user scrolls =====
+    // Each line appears when it enters viewport (so it feels tied to scrolling)
+    const lineObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add("show");
+      });
+    }, { threshold: 0.55 });
+
+    doaLines.forEach(line => lineObserver.observe(line));
+
+    // ===== COUNTDOWN =====
+    function pad2(n) { return String(n).padStart(2, "0"); }
+
+    function tickCountdown() {
+      const now = Date.now();
+      let diff = Math.max(0, weddingDate - now);
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      diff -= days * (1000 * 60 * 60 * 24);
+
+      const hours = Math.floor(diff / (1000 * 60 * 60));
+      diff -= hours * (1000 * 60 * 60);
+
+      const mins = Math.floor(diff / (1000 * 60));
+      diff -= mins * (1000 * 60);
+
+      const secs = Math.floor(diff / 1000);
+
+      document.getElementById("cdDays").textContent = pad2(days);
+      document.getElementById("cdHours").textContent = pad2(hours);
+      document.getElementById("cdMins").textContent = pad2(mins);
+      document.getElementById("cdSecs").textContent = pad2(secs);
+    }
+    setInterval(tickCountdown, 1000);
+    tickCountdown();
+
+    // ===== GALLERY SLIDER (swipe + dots) =====
+    function setGalleryIndex(i) {
+      galleryIndex = Math.max(0, Math.min(i, dots.length - 1));
+      galleryTrack.style.transform = `translate3d(${-galleryIndex * 100}%, 0, 0)`;
+      dots.forEach((d, idx) => d.classList.toggle("isActive", idx === galleryIndex));
+    }
+
+    dotsWrap.addEventListener("click", (e) => {
+      const btn = e.target.closest(".dot");
+      if (!btn) return;
+      setGalleryIndex(Number(btn.dataset.idx || 0));
     });
+
+    let startX = 0, currentX = 0, dragging = false;
+
+    function onStart(e) {
+      const p = e.touches ? e.touches[0] : e;
+      startX = p.clientX;
+      currentX = startX;
+      dragging = true;
+      galleryTrack.classList.add("dragging");
+    }
+
+    function onMove(e) {
+      if (!dragging) return;
+      const p = e.touches ? e.touches[0] : e;
+      currentX = p.clientX;
+    }
+
+    function onEnd() {
+      if (!dragging) return;
+      dragging = false;
+      galleryTrack.classList.remove("dragging");
+
+      const dx = currentX - startX;
+      const threshold = 45;
+
+      if (dx < -threshold) setGalleryIndex(galleryIndex + 1);
+      else if (dx > threshold) setGalleryIndex(galleryIndex - 1);
+      else setGalleryIndex(galleryIndex);
+    }
+
+    const viewport = document.querySelector(".galleryViewport");
+    viewport.addEventListener("touchstart", onStart, { passive: true });
+    viewport.addEventListener("touchmove", onMove, { passive: true });
+    viewport.addEventListener("touchend", onEnd);
+
+    viewport.addEventListener("mousedown", onStart);
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onEnd);
+
+    // Start at slide 1
+    setGalleryIndex(0);
   </script>
+
 </body>
 </html>
-
